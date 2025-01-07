@@ -1,0 +1,55 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v9.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v9.0": {
+      "ECUSim/1.0.0": {
+        "dependencies": {
+          "CommonHwLib": "1.0.0"
+        },
+        "runtime": {
+          "ECUSim.dll": {}
+        }
+      },
+      "CommonHwLib/1.0.0": {
+        "dependencies": {
+          "HwDriverInterface": "1.0.0"
+        },
+        "runtime": {
+          "CommonHwLib.dll": {
+            "assemblyVersion": "1.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "HwDriverInterface/1.0.0": {
+        "runtime": {
+          "HwDriverInterface.dll": {
+            "assemblyVersion": "1.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "ECUSim/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "CommonHwLib/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "HwDriverInterface/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}
