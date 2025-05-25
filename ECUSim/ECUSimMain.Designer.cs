@@ -29,158 +29,189 @@ namespace ECUSim
         /// </summary>
         private void InitializeComponent()
         {
-            this.StatusInfo = new System.Windows.Forms.StatusStrip();
-            this.UserInfo = new System.Windows.Forms.ToolStripStatusLabel();
-            this.tlpMasterLayout = new System.Windows.Forms.TableLayoutPanel();
-            this.tcMain = new System.Windows.Forms.TabControl();
-            this.tabTrace = new System.Windows.Forms.TabPage();
-            this.dgCANTrace = new System.Windows.Forms.DataGridView();
-            this.tabTxRxSetup = new System.Windows.Forms.TabPage();
-            this.txtReqRepJson = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.tabCommunicationSetup = new System.Windows.Forms.TabPage();
-            this.StatusInfo.SuspendLayout();
-            this.tlpMasterLayout.SuspendLayout();
-            this.tcMain.SuspendLayout();
-            this.tabTrace.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgCANTrace)).BeginInit();
-            this.tabTxRxSetup.SuspendLayout();
-            this.SuspendLayout();
+            StatusInfo = new System.Windows.Forms.StatusStrip();
+            UserInfo = new System.Windows.Forms.ToolStripStatusLabel();
+            tlpMasterLayout = new System.Windows.Forms.TableLayoutPanel();
+            tcMain = new System.Windows.Forms.TabControl();
+            tabTrace = new System.Windows.Forms.TabPage();
+            tabRequestReplySetup = new System.Windows.Forms.TabPage();
+            tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            txtMessage = new System.Windows.Forms.TextBox();
+            txtMessagesConfig = new System.Windows.Forms.TextBox();
+            btnAddMessage = new System.Windows.Forms.Button();
+            tabCommunicationSetup = new System.Windows.Forms.TabPage();
+            StatusInfo.SuspendLayout();
+            tlpMasterLayout.SuspendLayout();
+            tcMain.SuspendLayout();
+            tabRequestReplySetup.SuspendLayout();
+            tableLayoutPanel1.SuspendLayout();
+            SuspendLayout();
             // 
             // StatusInfo
             // 
-            this.StatusInfo.ImageScalingSize = new System.Drawing.Size(24, 24);
-            this.StatusInfo.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.UserInfo});
-            this.StatusInfo.Location = new System.Drawing.Point(0, 920);
-            this.StatusInfo.Name = "StatusInfo";
-            this.StatusInfo.Size = new System.Drawing.Size(1472, 32);
-            this.StatusInfo.TabIndex = 1;
-            this.StatusInfo.Text = "statusStrip1";
+            StatusInfo.ImageScalingSize = new System.Drawing.Size(24, 24);
+            StatusInfo.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { UserInfo });
+            StatusInfo.Location = new System.Drawing.Point(0, 582);
+            StatusInfo.Name = "StatusInfo";
+            StatusInfo.Padding = new System.Windows.Forms.Padding(1, 0, 10, 0);
+            StatusInfo.Size = new System.Drawing.Size(1141, 22);
+            StatusInfo.TabIndex = 1;
+            StatusInfo.Text = "statusStrip1";
             // 
             // UserInfo
             // 
-            this.UserInfo.Name = "UserInfo";
-            this.UserInfo.Size = new System.Drawing.Size(179, 25);
-            this.UserInfo.Text = "toolStripStatusLabel1";
+            UserInfo.Name = "UserInfo";
+            UserInfo.Size = new System.Drawing.Size(118, 17);
+            UserInfo.Text = "toolStripStatusLabel1";
             // 
             // tlpMasterLayout
             // 
-            this.tlpMasterLayout.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tlpMasterLayout.AutoSize = true;
-            this.tlpMasterLayout.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tlpMasterLayout.ColumnCount = 3;
-            this.tlpMasterLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 70F));
-            this.tlpMasterLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 15F));
-            this.tlpMasterLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 15F));
-            this.tlpMasterLayout.Controls.Add(this.tcMain, 0, 1);
-            this.tlpMasterLayout.Location = new System.Drawing.Point(12, 12);
-            this.tlpMasterLayout.Name = "tlpMasterLayout";
-            this.tlpMasterLayout.RowCount = 2;
-            this.tlpMasterLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F));
-            this.tlpMasterLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 90F));
-            this.tlpMasterLayout.Size = new System.Drawing.Size(1441, 881);
-            this.tlpMasterLayout.TabIndex = 2;
+            tlpMasterLayout.AutoSize = true;
+            tlpMasterLayout.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            tlpMasterLayout.ColumnCount = 3;
+            tlpMasterLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 70F));
+            tlpMasterLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 15F));
+            tlpMasterLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 15F));
+            tlpMasterLayout.Controls.Add(tcMain, 0, 1);
+            tlpMasterLayout.Dock = System.Windows.Forms.DockStyle.Fill;
+            tlpMasterLayout.Location = new System.Drawing.Point(0, 0);
+            tlpMasterLayout.Margin = new System.Windows.Forms.Padding(2);
+            tlpMasterLayout.Name = "tlpMasterLayout";
+            tlpMasterLayout.RowCount = 2;
+            tlpMasterLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F));
+            tlpMasterLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 90F));
+            tlpMasterLayout.Size = new System.Drawing.Size(1141, 582);
+            tlpMasterLayout.TabIndex = 2;
             // 
             // tcMain
             // 
-            this.tcMain.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tlpMasterLayout.SetColumnSpan(this.tcMain, 3);
-            this.tcMain.Controls.Add(this.tabTrace);
-            this.tcMain.Controls.Add(this.tabTxRxSetup);
-            this.tcMain.Controls.Add(this.tabCommunicationSetup);
-            this.tcMain.Location = new System.Drawing.Point(3, 91);
-            this.tcMain.Name = "tcMain";
-            this.tcMain.SelectedIndex = 0;
-            this.tcMain.Size = new System.Drawing.Size(1435, 787);
-            this.tcMain.TabIndex = 0;
+            tcMain.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            tlpMasterLayout.SetColumnSpan(tcMain, 3);
+            tcMain.Controls.Add(tabTrace);
+            tcMain.Controls.Add(tabRequestReplySetup);
+            tcMain.Controls.Add(tabCommunicationSetup);
+            tcMain.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            tcMain.Location = new System.Drawing.Point(2, 60);
+            tcMain.Margin = new System.Windows.Forms.Padding(2);
+            tcMain.Name = "tcMain";
+            tcMain.SelectedIndex = 0;
+            tcMain.Size = new System.Drawing.Size(1137, 520);
+            tcMain.TabIndex = 0;
             // 
             // tabTrace
             // 
-            this.tabTrace.Controls.Add(this.dgCANTrace);
-            this.tabTrace.Location = new System.Drawing.Point(4, 34);
-            this.tabTrace.Name = "tabTrace";
-            this.tabTrace.Padding = new System.Windows.Forms.Padding(3);
-            this.tabTrace.Size = new System.Drawing.Size(1427, 749);
-            this.tabTrace.TabIndex = 0;
-            this.tabTrace.Text = "Trace";
-            this.tabTrace.UseVisualStyleBackColor = true;
+            tabTrace.Location = new System.Drawing.Point(4, 24);
+            tabTrace.Margin = new System.Windows.Forms.Padding(2);
+            tabTrace.Name = "tabTrace";
+            tabTrace.Padding = new System.Windows.Forms.Padding(2);
+            tabTrace.Size = new System.Drawing.Size(1129, 492);
+            tabTrace.TabIndex = 0;
+            tabTrace.Text = "Trace";
+            tabTrace.UseVisualStyleBackColor = true;
             // 
-            // dgCANTrace
+            // tabRequestReplySetup
             // 
-            this.dgCANTrace.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgCANTrace.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dgCANTrace.Location = new System.Drawing.Point(3, 3);
-            this.dgCANTrace.Name = "dgCANTrace";
-            this.dgCANTrace.RowHeadersWidth = 62;
-            this.dgCANTrace.RowTemplate.Height = 33;
-            this.dgCANTrace.Size = new System.Drawing.Size(1421, 743);
-            this.dgCANTrace.TabIndex = 0;
+            tabRequestReplySetup.Controls.Add(tableLayoutPanel1);
+            tabRequestReplySetup.Location = new System.Drawing.Point(4, 24);
+            tabRequestReplySetup.Margin = new System.Windows.Forms.Padding(2);
+            tabRequestReplySetup.Name = "tabRequestReplySetup";
+            tabRequestReplySetup.Padding = new System.Windows.Forms.Padding(2);
+            tabRequestReplySetup.Size = new System.Drawing.Size(1169, 580);
+            tabRequestReplySetup.TabIndex = 1;
+            tabRequestReplySetup.Text = "Request/Response Setup";
+            tabRequestReplySetup.UseVisualStyleBackColor = true;
             // 
-            // tabTxRxSetup
+            // tableLayoutPanel1
             // 
-            this.tabTxRxSetup.Controls.Add(this.txtReqRepJson);
-            this.tabTxRxSetup.Controls.Add(this.label1);
-            this.tabTxRxSetup.Location = new System.Drawing.Point(4, 34);
-            this.tabTxRxSetup.Name = "tabTxRxSetup";
-            this.tabTxRxSetup.Padding = new System.Windows.Forms.Padding(3);
-            this.tabTxRxSetup.Size = new System.Drawing.Size(1427, 749);
-            this.tabTxRxSetup.TabIndex = 1;
-            this.tabTxRxSetup.Text = "Tx/Rx Setup";
-            this.tabTxRxSetup.UseVisualStyleBackColor = true;
+            tableLayoutPanel1.AutoSize = true;
+            tableLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            tableLayoutPanel1.ColumnCount = 2;
+            tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            tableLayoutPanel1.Controls.Add(txtMessage, 0, 1);
+            tableLayoutPanel1.Controls.Add(txtMessagesConfig, 1, 1);
+            tableLayoutPanel1.Controls.Add(btnAddMessage, 0, 0);
+            tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            tableLayoutPanel1.Location = new System.Drawing.Point(2, 2);
+            tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(2);
+            tableLayoutPanel1.Name = "tableLayoutPanel1";
+            tableLayoutPanel1.RowCount = 2;
+            tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 7F));
+            tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 93F));
+            tableLayoutPanel1.Size = new System.Drawing.Size(1165, 576);
+            tableLayoutPanel1.TabIndex = 0;
             // 
-            // txtReqRepJson
+            // txtMessage
             // 
-            this.txtReqRepJson.Location = new System.Drawing.Point(6, 53);
-            this.txtReqRepJson.Multiline = true;
-            this.txtReqRepJson.Name = "txtReqRepJson";
-            this.txtReqRepJson.Size = new System.Drawing.Size(1416, 687);
-            this.txtReqRepJson.TabIndex = 1;
+            txtMessage.Dock = System.Windows.Forms.DockStyle.Fill;
+            txtMessage.ForeColor = System.Drawing.SystemColors.Highlight;
+            txtMessage.Location = new System.Drawing.Point(2, 42);
+            txtMessage.Margin = new System.Windows.Forms.Padding(2);
+            txtMessage.Multiline = true;
+            txtMessage.Name = "txtMessage";
+            txtMessage.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+            txtMessage.Size = new System.Drawing.Size(578, 532);
+            txtMessage.TabIndex = 0;
+            txtMessage.WordWrap = false;
             // 
-            // label1
+            // txtMessagesConfig
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(6, 19);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(198, 25);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "Request/Reply Settings:";
+            txtMessagesConfig.Dock = System.Windows.Forms.DockStyle.Fill;
+            txtMessagesConfig.Location = new System.Drawing.Point(584, 42);
+            txtMessagesConfig.Margin = new System.Windows.Forms.Padding(2);
+            txtMessagesConfig.Multiline = true;
+            txtMessagesConfig.Name = "txtMessagesConfig";
+            txtMessagesConfig.ReadOnly = true;
+            txtMessagesConfig.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+            txtMessagesConfig.Size = new System.Drawing.Size(579, 532);
+            txtMessagesConfig.TabIndex = 1;
+            txtMessagesConfig.WordWrap = false;
+            // 
+            // btnAddMessage
+            // 
+            btnAddMessage.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom;
+            btnAddMessage.Location = new System.Drawing.Point(115, 2);
+            btnAddMessage.Margin = new System.Windows.Forms.Padding(2);
+            btnAddMessage.Name = "btnAddMessage";
+            btnAddMessage.Size = new System.Drawing.Size(351, 36);
+            btnAddMessage.TabIndex = 2;
+            btnAddMessage.Text = "Define and Add the below message >>";
+            btnAddMessage.UseVisualStyleBackColor = true;
+            btnAddMessage.Click += btnAddMessage_Click;
             // 
             // tabCommunicationSetup
             // 
-            this.tabCommunicationSetup.Location = new System.Drawing.Point(4, 34);
-            this.tabCommunicationSetup.Name = "tabCommunicationSetup";
-            this.tabCommunicationSetup.Padding = new System.Windows.Forms.Padding(3);
-            this.tabCommunicationSetup.Size = new System.Drawing.Size(1428, 750);
-            this.tabCommunicationSetup.TabIndex = 2;
-            this.tabCommunicationSetup.Text = "Com Setup";
-            this.tabCommunicationSetup.UseVisualStyleBackColor = true;
+            tabCommunicationSetup.Location = new System.Drawing.Point(4, 24);
+            tabCommunicationSetup.Margin = new System.Windows.Forms.Padding(2);
+            tabCommunicationSetup.Name = "tabCommunicationSetup";
+            tabCommunicationSetup.Padding = new System.Windows.Forms.Padding(2);
+            tabCommunicationSetup.Size = new System.Drawing.Size(1169, 580);
+            tabCommunicationSetup.TabIndex = 2;
+            tabCommunicationSetup.Text = "Communication Setup";
+            tabCommunicationSetup.UseVisualStyleBackColor = true;
             // 
             // ECUSimMain
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 25F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1472, 952);
-            this.Controls.Add(this.tlpMasterLayout);
-            this.Controls.Add(this.StatusInfo);
-            this.Name = "ECUSimMain";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "ECUSim";
-            this.StatusInfo.ResumeLayout(false);
-            this.StatusInfo.PerformLayout();
-            this.tlpMasterLayout.ResumeLayout(false);
-            this.tcMain.ResumeLayout(false);
-            this.tabTrace.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.dgCANTrace)).EndInit();
-            this.tabTxRxSetup.ResumeLayout(false);
-            this.tabTxRxSetup.PerformLayout();
-            this.ResumeLayout(false);
-            this.PerformLayout();
-
+            AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            ClientSize = new System.Drawing.Size(1141, 604);
+            Controls.Add(tlpMasterLayout);
+            Controls.Add(StatusInfo);
+            Margin = new System.Windows.Forms.Padding(2);
+            Name = "ECUSimMain";
+            StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            Text = "ECU Simulator";
+            Load += ECUSimMain_Load;
+            StatusInfo.ResumeLayout(false);
+            StatusInfo.PerformLayout();
+            tlpMasterLayout.ResumeLayout(false);
+            tcMain.ResumeLayout(false);
+            tabRequestReplySetup.ResumeLayout(false);
+            tabRequestReplySetup.PerformLayout();
+            tableLayoutPanel1.ResumeLayout(false);
+            tableLayoutPanel1.PerformLayout();
+            ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
@@ -189,11 +220,12 @@ namespace ECUSim
         private System.Windows.Forms.TableLayoutPanel tlpMasterLayout;
         private System.Windows.Forms.TabControl tcMain;
         private System.Windows.Forms.TabPage tabTrace;
-        private System.Windows.Forms.TabPage tabTxRxSetup;
+        private System.Windows.Forms.TabPage tabRequestReplySetup;
         private System.Windows.Forms.TabPage tabCommunicationSetup;
-        private System.Windows.Forms.DataGridView dgCANTrace;
-        private System.Windows.Forms.TextBox txtReqRepJson;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private System.Windows.Forms.TextBox txtMessage;
+        private System.Windows.Forms.TextBox txtMessagesConfig;
+        private System.Windows.Forms.Button btnAddMessage;
     }
 }
 

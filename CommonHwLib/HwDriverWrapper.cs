@@ -3,7 +3,7 @@ using System;
 
 namespace CommonHwLib
 {
-    public class HwDriverWrapper : IHwDriverWrapper
+    public class HwDriverWrapper : IHwDriverInterface
     {
     }
 }

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.34601.136
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35527.113 d17.12
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ECUSim", "ECUSim\ECUSim.csproj", "{BA8AA9C0-2A0C-403B-BC29-3274F4A24C04}"
 EndProject
@@ -10,6 +10,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HwDriverInterface", "HwDriverInterface\HwDriverInterface.csproj", "{0E22E4EF-5E3B-4234-BF62-8C1E1203FDC7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VectorXLWrapper", "VectorXLWrapper\VectorXLWrapper.csproj", "{787964D4-9482-4B4F-AF28-E81FAD7EBBD0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UtilityLib", "UtilityLib\UtilityLib.csproj", "{B726500F-B5B7-46C0-8878-94DE80E7B33B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MessageDesignerLib", "MessageDesignerLib\MessageDesignerLib.csproj", "{B0C8E3D9-3707-45D8-848B-17113BB7BC41}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +37,14 @@ Global
 		{787964D4-9482-4B4F-AF28-E81FAD7EBBD0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{787964D4-9482-4B4F-AF28-E81FAD7EBBD0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{787964D4-9482-4B4F-AF28-E81FAD7EBBD0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B726500F-B5B7-46C0-8878-94DE80E7B33B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B726500F-B5B7-46C0-8878-94DE80E7B33B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B726500F-B5B7-46C0-8878-94DE80E7B33B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B726500F-B5B7-46C0-8878-94DE80E7B33B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B0C8E3D9-3707-45D8-848B-17113BB7BC41}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B0C8E3D9-3707-45D8-848B-17113BB7BC41}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B0C8E3D9-3707-45D8-848B-17113BB7BC41}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B0C8E3D9-3707-45D8-848B-17113BB7BC41}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

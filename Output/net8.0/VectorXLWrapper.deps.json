@@ -1,0 +1,39 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v8.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v8.0": {
+      "VectorXLWrapper/1.0.0": {
+        "dependencies": {
+          "HwDriverInterface": "1.0.0"
+        },
+        "runtime": {
+          "VectorXLWrapper.dll": {}
+        }
+      },
+      "HwDriverInterface/1.0.0": {
+        "runtime": {
+          "HwDriverInterface.dll": {
+            "assemblyVersion": "1.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "VectorXLWrapper/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "HwDriverInterface/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}
