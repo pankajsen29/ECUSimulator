@@ -15,6 +15,7 @@
 **Motivation:**
 - the main idea is to enable automotive tool developers perform testing without the need of physical hardwares (e.g., powerpack/ECU and the ECU interface hardware).
 - to have a simple UI unlike already available softwares in market (e.g., CANalyzer (link) or BUSMASTER (link)).
+- (USP) also to have switching to higher payload or higher baudrate (from CAN to CANFD and vice-versa) dynamically which is unique in this tool. 
 - Unlike CANalyzer:
     - no cost for the license.
     - no new programming language (CAPL (Communication Access Programming Language) is used by CANalyzer) is required to be learnt or used.
