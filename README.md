@@ -28,7 +28,8 @@ Windows 10 or above.
 
 **Prerequisites:**
 - .NET 8.0
-- Vector Driver: Go to Vector Download Center: https://www.vector.com/int/en/support-downloads/download-center
+- Vector Driver: Go to Vector Download Center:
+  https://www.vector.com/int/en/support-downloads/download-center
 and download the latest version of the followings:
 
 (1). Vector Driver Setup for Windows 10 and 11:
@@ -40,6 +41,7 @@ Install only the "Mandatory Components" (note: install the specific driver corre
 Note: steps are shown in the "Test Setup" section.
 
 Used version for testing: Vector Driver Setup 25.20.0 for Windows 10 and 11
+
 https://www.vector.com/int/en/download/vector-driver-setup-25-20-0-for-windows-10-and-11/
 
 (2). xl-driver-library:
