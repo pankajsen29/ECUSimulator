@@ -28,7 +28,30 @@ Windows 10 or above.
 
 **Prerequisites:**
 - .NET 8.0
-- Vector Driver (version is to be indicated, link to be included)
+- Vector Driver: Go to Vector Download Center: https://www.vector.com/int/en/support-downloads/download-center
+and download the latest version of the followings:
+
+(1). Vector Driver Setup for Windows 10 and 11:
+Install only the "Mandatory Components" (note: install the specific driver corresponding to an already available hardware interface from Vector) which include the followings and are enough for performing the tests with this application:
+	a) Virtual CAN Bus
+	b) Vector Hardware Config (legacy)
+	c) Vector Hardware Manager
+
+Note: steps are shown in the "Test Setup" section.
+
+Used version for testing: Vector Driver Setup 25.20.0 for Windows 10 and 11
+https://www.vector.com/int/en/download/vector-driver-setup-25-20-0-for-windows-10-and-11/
+
+(2). xl-driver-library:
+
+Install and (optionally) copy the below dlls from "C:\Users\Public\Documents\Vector\XL Driver Library 25.20.14.0\bin" to solution's 'Ref' folder for example:
+a) vxlapi.dll [XL Driver Library DLL. This file should be present in the folder with the application.]
+b) vxlapi64.dll [64 Bit version of XL Driver Library DLL. This file should be distributed with the application.]
+c) vxlapi_NET.dll [.NET Wrapper for .NET applications. This file should be distributed with the application.]
+
+from which "vxlapi_NET.dll" is referenced from the project "VectorXLWrapper" and manually copied the other 2 dlls "vxlapi64.dll" and "vxlapi.dll" to the build "Output" folder.
+
+Note: There are no official C# code samples from Vector specifically targeting .NET 8 or higher for the XL-Driver-Library available on the public Vector website or in their documentation as of now. The official Vector XL-Driver-Library package includes a .NET wrapper (vxlapi_NET) and C# samples (local paths are given below), but these are generally based on older .NET versions (such as .NET Framework or .NET Core 3.x). However, the .NET wrapper is compatible with .NET 3.5 and above, therefore I have used it in this .NET 8 project application.
 
 **Overall Project structure:**
 - the main GUI host application is a Winform application which supports addition of WPF projects (notice "<UseWPF>True</UseWPF>" in ECUSim.csproj file);
@@ -41,14 +64,18 @@ Windows 10 or above.
  - messages (request-response) setup: CAN messages
  - trace window: displays CAN messages
 
+**Test Setup:**
+
 **Testing:**
 Steps to be shown using Vector Virtual CAN Driver
 
 **Limitation:** (Temporary)
- - it utilizes Vector Virtual Interface at the moment for enabling the developers perform testing, hence can't be used with any other hardware interfaces (e.g., PEAK, DCI, ETAS etc.) at the moment. But have plan to support in case the planned primary purpose of this tool is observed.
+ - the hardware communication code supports only Vector interfaces at the moment, hence can't be used with any other hardware interfaces (e.g., PEAK, DCI, ETAS etc.). But have plan to support in case the planned primary purpose of this tool is observed. Design is done considering this point.
  
 **Logging:**
 Log4net (to be included)
 
 **CMD-line execution:**
 - todo: for the purpose of automation
+
+**Installer:**
