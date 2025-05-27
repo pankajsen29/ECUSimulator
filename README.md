@@ -58,6 +58,21 @@ from which "vxlapi_NET.dll" is referenced from the project "VectorXLWrapper" and
 
 Note: There are no official C# code samples from Vector specifically targeting .NET 8 or higher for the XL-Driver-Library available on the public Vector website or in their documentation as of now. The official Vector XL-Driver-Library package includes a .NET wrapper (vxlapi_NET) and C# samples (local paths are given below), but these are generally based on older .NET versions (such as .NET Framework or .NET Core 3.x). However, the .NET wrapper is compatible with .NET 3.5 and above, therefore I have used it in this .NET 8 project application.
 
+Referred version: XL Driver Library 25.20.14
+
+https://www.vector.com/se/en/download/xl-driver-library-25-20-14/
+
+API documentations: 
+online: https://www.vector.com/se/en/download/manual-xl-driver-library/
+local path once installed: C:\Users\Public\Documents\Vector\XL Driver Library 25.20.14.0\doc\XL Driver Library - Description.pdf
+
+Factsheet: https://cdn.vector.com/cms/content/products/XL_Driver_Library/Docs/XL_Driver_Library_Factsheet_EN_01.pdf
+
+.NET samples can be referred here:
+CAN: C:\Users\Public\Documents\Vector\XL Driver Library 25.20.14.0\samples\NET\xlCANdemo_Csharp
+CANFD: C:\Users\Public\Documents\Vector\XL Driver Library 25.20.14.0\samples\NET\xlCANFDdemo_Csharp
+
+
 **Overall Project structure:**
 - the main GUI host application is a Winform application which supports addition of WPF projects (notice "<UseWPF>True</UseWPF>" in ECUSim.csproj file);
 	- winforms: used for fast development
