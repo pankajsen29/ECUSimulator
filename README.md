@@ -35,6 +35,7 @@ Windows 10 or above.
 and download the latest version of the followings:
 
 (1). Vector Driver Setup for Windows 10 and 11:
+
 Install only the "Mandatory Components" (note: install the specific driver corresponding to an already available hardware interface from Vector) which include the followings and are enough for performing the tests with this application:
 	a) Virtual CAN Bus
 	b) Vector Hardware Config (legacy)
