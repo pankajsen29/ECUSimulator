@@ -63,13 +63,20 @@ Referred version: XL Driver Library 25.20.14
 https://www.vector.com/se/en/download/xl-driver-library-25-20-14/
 
 API documentations: 
-online: https://www.vector.com/se/en/download/manual-xl-driver-library/
-local path once installed: C:\Users\Public\Documents\Vector\XL Driver Library 25.20.14.0\doc\XL Driver Library - Description.pdf
+online: 
+
+https://www.vector.com/se/en/download/manual-xl-driver-library/
+
+local path once installed: 
+
+C:\Users\Public\Documents\Vector\XL Driver Library 25.20.14.0\doc\XL Driver Library - Description.pdf
 
 Factsheet: https://cdn.vector.com/cms/content/products/XL_Driver_Library/Docs/XL_Driver_Library_Factsheet_EN_01.pdf
 
 .NET samples can be referred here:
+
 CAN: C:\Users\Public\Documents\Vector\XL Driver Library 25.20.14.0\samples\NET\xlCANdemo_Csharp
+
 CANFD: C:\Users\Public\Documents\Vector\XL Driver Library 25.20.14.0\samples\NET\xlCANFDdemo_Csharp
 
 
