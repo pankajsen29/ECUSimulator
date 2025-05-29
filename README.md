@@ -102,6 +102,7 @@ CANFD: C:\Users\Public\Documents\Vector\XL Driver Library 25.20.14.0\samples\NET
 
 **Overall Project structure:**
 - todo: class relations to be included
+- todo: relations between the assemblies also are to be shown
 
 **Functailities:**
  - communication setup: hardware setup
