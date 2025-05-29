@@ -80,11 +80,28 @@ CAN: C:\Users\Public\Documents\Vector\XL Driver Library 25.20.14.0\samples\NET\x
 CANFD: C:\Users\Public\Documents\Vector\XL Driver Library 25.20.14.0\samples\NET\xlCANFDdemo_Csharp
 
 
-**Overall Project structure:**
-- the main GUI host application is a Winform application which supports addition of WPF projects (notice "<UseWPF>True</UseWPF>" in ECUSim.csproj file);
-	- winforms: used for fast development
+**Overall Projects Description:**
+- ECUSim: The is the main GUI host application. It is a Winform application which also supports addition of WPF projects (notice "<UseWPF>True</UseWPF>" in ECUSim.csproj file).
+	- winforms: used for faster development.
 	- wpf: is used for rich GUI (MVVM pattern is followed)
-- todo: other projects and libs
+
+- UtilityLib: includes utility methods, e.g., json serialization/deserialization methods.
+- 
+- CommonHwLib: This is the main layer for hardware communication. It includes the wrapper classes for hardware drivers. handles the driver initialization and communication (sending/receiving of CAN messages)
+- 
+- HwSettingsLib: includes definitions of types used for hardware communication.
+- 
+- HwWrapperInterface: interface for Hardware wrapper library.
+- 
+- VectorXLWrapper: vector hardware wrapper/driver library which implements the methods for vector driver initialization, transmitting/receiving messages etc.
+-
+- HwWrapperFactory: includes the factory classes for returning the concrete object of the hardware wrapper/driver library.
+- 
+- MessageDesignerLib: includes the types used for defining a message to be transmitted.
+
+
+**Overall Project structure:**
+- todo: class relations to be included
 
 **Functailities:**
  - communication setup: hardware setup
