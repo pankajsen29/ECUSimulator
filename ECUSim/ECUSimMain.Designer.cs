@@ -40,11 +40,13 @@ namespace ECUSim
             txtMessagesConfig = new System.Windows.Forms.TextBox();
             btnAddMessage = new System.Windows.Forms.Button();
             tabCommunicationSetup = new System.Windows.Forms.TabPage();
+            btnInitHwDriver = new System.Windows.Forms.Button();
             StatusInfo.SuspendLayout();
             tlpMasterLayout.SuspendLayout();
             tcMain.SuspendLayout();
             tabRequestReplySetup.SuspendLayout();
             tableLayoutPanel1.SuspendLayout();
+            tabCommunicationSetup.SuspendLayout();
             SuspendLayout();
             // 
             // StatusInfo
@@ -116,7 +118,7 @@ namespace ECUSim
             tabRequestReplySetup.Margin = new System.Windows.Forms.Padding(2);
             tabRequestReplySetup.Name = "tabRequestReplySetup";
             tabRequestReplySetup.Padding = new System.Windows.Forms.Padding(2);
-            tabRequestReplySetup.Size = new System.Drawing.Size(1169, 580);
+            tabRequestReplySetup.Size = new System.Drawing.Size(1129, 492);
             tabRequestReplySetup.TabIndex = 1;
             tabRequestReplySetup.Text = "Request/Response Setup";
             tabRequestReplySetup.UseVisualStyleBackColor = true;
@@ -138,42 +140,42 @@ namespace ECUSim
             tableLayoutPanel1.RowCount = 2;
             tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 7F));
             tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 93F));
-            tableLayoutPanel1.Size = new System.Drawing.Size(1165, 576);
+            tableLayoutPanel1.Size = new System.Drawing.Size(1125, 488);
             tableLayoutPanel1.TabIndex = 0;
             // 
             // txtMessage
             // 
             txtMessage.Dock = System.Windows.Forms.DockStyle.Fill;
             txtMessage.ForeColor = System.Drawing.SystemColors.Highlight;
-            txtMessage.Location = new System.Drawing.Point(2, 42);
+            txtMessage.Location = new System.Drawing.Point(2, 36);
             txtMessage.Margin = new System.Windows.Forms.Padding(2);
             txtMessage.Multiline = true;
             txtMessage.Name = "txtMessage";
             txtMessage.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            txtMessage.Size = new System.Drawing.Size(578, 532);
+            txtMessage.Size = new System.Drawing.Size(558, 450);
             txtMessage.TabIndex = 0;
             txtMessage.WordWrap = false;
             // 
             // txtMessagesConfig
             // 
             txtMessagesConfig.Dock = System.Windows.Forms.DockStyle.Fill;
-            txtMessagesConfig.Location = new System.Drawing.Point(584, 42);
+            txtMessagesConfig.Location = new System.Drawing.Point(564, 36);
             txtMessagesConfig.Margin = new System.Windows.Forms.Padding(2);
             txtMessagesConfig.Multiline = true;
             txtMessagesConfig.Name = "txtMessagesConfig";
             txtMessagesConfig.ReadOnly = true;
             txtMessagesConfig.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            txtMessagesConfig.Size = new System.Drawing.Size(579, 532);
+            txtMessagesConfig.Size = new System.Drawing.Size(559, 450);
             txtMessagesConfig.TabIndex = 1;
             txtMessagesConfig.WordWrap = false;
             // 
             // btnAddMessage
             // 
             btnAddMessage.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom;
-            btnAddMessage.Location = new System.Drawing.Point(115, 2);
+            btnAddMessage.Location = new System.Drawing.Point(105, 2);
             btnAddMessage.Margin = new System.Windows.Forms.Padding(2);
             btnAddMessage.Name = "btnAddMessage";
-            btnAddMessage.Size = new System.Drawing.Size(351, 36);
+            btnAddMessage.Size = new System.Drawing.Size(351, 30);
             btnAddMessage.TabIndex = 2;
             btnAddMessage.Text = "Define and Add the below message >>";
             btnAddMessage.UseVisualStyleBackColor = true;
@@ -181,14 +183,25 @@ namespace ECUSim
             // 
             // tabCommunicationSetup
             // 
+            tabCommunicationSetup.Controls.Add(btnInitHwDriver);
             tabCommunicationSetup.Location = new System.Drawing.Point(4, 24);
             tabCommunicationSetup.Margin = new System.Windows.Forms.Padding(2);
             tabCommunicationSetup.Name = "tabCommunicationSetup";
             tabCommunicationSetup.Padding = new System.Windows.Forms.Padding(2);
-            tabCommunicationSetup.Size = new System.Drawing.Size(1169, 580);
+            tabCommunicationSetup.Size = new System.Drawing.Size(1129, 492);
             tabCommunicationSetup.TabIndex = 2;
             tabCommunicationSetup.Text = "Communication Setup";
             tabCommunicationSetup.UseVisualStyleBackColor = true;
+            // 
+            // btnInitHwDriver
+            // 
+            btnInitHwDriver.Location = new System.Drawing.Point(33, 40);
+            btnInitHwDriver.Name = "btnInitHwDriver";
+            btnInitHwDriver.Size = new System.Drawing.Size(162, 23);
+            btnInitHwDriver.TabIndex = 0;
+            btnInitHwDriver.Text = "Initialize CAN Driver";
+            btnInitHwDriver.UseVisualStyleBackColor = true;
+            btnInitHwDriver.Click += btnInitHwDriver_Click;
             // 
             // ECUSimMain
             // 
@@ -210,6 +223,7 @@ namespace ECUSim
             tabRequestReplySetup.PerformLayout();
             tableLayoutPanel1.ResumeLayout(false);
             tableLayoutPanel1.PerformLayout();
+            tabCommunicationSetup.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
         }
@@ -226,6 +240,7 @@ namespace ECUSim
         private System.Windows.Forms.TextBox txtMessage;
         private System.Windows.Forms.TextBox txtMessagesConfig;
         private System.Windows.Forms.Button btnAddMessage;
+        private System.Windows.Forms.Button btnInitHwDriver;
     }
 }
 

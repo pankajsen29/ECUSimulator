@@ -13,7 +13,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\HwDriverInterface\HwDriverInterface.csproj" />
+    <ProjectReference Include="..\HwSettingsLib\HwSettingsLib.csproj" />
+    <ProjectReference Include="..\HwWrapperFactory\HwWrapperFactory.csproj" />
+    <ProjectReference Include="..\HwWrapperInterface\HwWrapperInterface.csproj" />
   </ItemGroup>
 
 </Project>

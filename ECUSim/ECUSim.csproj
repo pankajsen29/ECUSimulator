@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CommonHwLib\CommonHwLib.csproj" />
+    <ProjectReference Include="..\HwSettingsLib\HwSettingsLib.csproj" />
     <ProjectReference Include="..\MessageDesignerLib\MessageDesignerLib.csproj" />
     <ProjectReference Include="..\UtilityLib\UtilityLib.csproj" />
   </ItemGroup>

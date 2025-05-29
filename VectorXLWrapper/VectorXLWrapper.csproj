@@ -13,7 +13,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\HwDriverInterface\HwDriverInterface.csproj" />
+    <ProjectReference Include="..\HwSettingsLib\HwSettingsLib.csproj" />
+    <ProjectReference Include="..\HwWrapperInterface\HwWrapperInterface.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="vxlapi_NET">
+      <HintPath>..\Ref\XL_Driver_Library_25.20.14.0\vxlapi_NET.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

@@ -1,11 +1,7 @@
-﻿using MessageDesignerLib;
+﻿using CommonHwLib;
+using HardwareDriverLayer.HwSettings;
+using MessageDesignerLib;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using UtilityLib;
@@ -83,11 +79,48 @@ namespace ECUSim
 
         private async Task LoadMessagesConfig()
         {
-            
+
         }
         private void btnAddMessage_Click(object sender, EventArgs e)
         {
 
+        }
+
+        /// <summary>
+        /// temp function, to be reworked later
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnInitHwDriver_Click(object sender, EventArgs e)
+        {
+            var comManager = new CommunicationManager();
+
+            //CommunicationSettings comSettings = new CommunicationSettings
+            //{
+            //    ACTIVE_CAN_HW = CAN_HW_INTERFACE.e_VECTOR_XL,
+            //    ACTIVE_CAN_ENV = CAN_ENV.e_CAN,
+            //    ACTIVE_COM_BAUDRATE = 500000
+            //};
+
+            CommunicationSettings comSettings = new CommunicationSettings
+            {
+                ACTIVE_CAN_HW = CAN_HW_INTERFACE.e_VECTOR_XL,
+                ACTIVE_CAN_ENV = CAN_ENV.e_CANFD,
+                ACTIVE_DATA_FRAME = CAN_DATA_FRAME_TYPE.e_FRAME_STD,
+                ACTIVE_CANFD_SETTINGS = new CANFD_SETTINGS
+                {
+                    arb_baudrate = 500000,
+                    arb_tseg1 = 7,
+                    arb_tseg2 = 2,
+                    arb_sjw = 2,
+                    data_baudrate = 2000000,
+                    data_tseg1 = 7,
+                    data_tseg2 = 2,
+                    data_sjw = 2
+                }
+            };
+
+            MessageBox.Show(comManager.InitializeCommunicationDriver(comSettings).ToString());
         }
     }
 }

@@ -1,0 +1,39 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v8.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v8.0": {
+      "HwWrapperInterface/1.0.0": {
+        "dependencies": {
+          "HwSettingsLib": "1.0.0"
+        },
+        "runtime": {
+          "HwWrapperInterface.dll": {}
+        }
+      },
+      "HwSettingsLib/1.0.0": {
+        "runtime": {
+          "HwSettingsLib.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "HwWrapperInterface/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "HwSettingsLib/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

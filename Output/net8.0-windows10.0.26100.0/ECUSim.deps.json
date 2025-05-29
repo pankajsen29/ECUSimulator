@@ -9,23 +9,24 @@
       "ECUSim/1.0.0": {
         "dependencies": {
           "CommonHwLib": "1.0.0",
+          "HwSettingsLib": "1.0.0",
           "MessageDesignerLib": "1.0.0",
           "UtilityLib": "1.0.0",
-          "runtimepack.Microsoft.Windows.SDK.NET.Ref": "10.0.26100.54"
+          "runtimepack.Microsoft.Windows.SDK.NET.Ref": "10.0.26100.57"
         },
         "runtime": {
           "ECUSim.dll": {}
         }
       },
-      "runtimepack.Microsoft.Windows.SDK.NET.Ref/10.0.26100.54": {
+      "runtimepack.Microsoft.Windows.SDK.NET.Ref/10.0.26100.57": {
         "runtime": {
           "Microsoft.Windows.SDK.NET.dll": {
             "assemblyVersion": "10.0.26100.38",
-            "fileVersion": "10.0.26100.52"
+            "fileVersion": "10.0.26100.55"
           },
           "WinRT.Runtime.dll": {
-            "assemblyVersion": "2.1.0.0",
-            "fileVersion": "2.1.6.47881"
+            "assemblyVersion": "2.2.0.0",
+            "fileVersion": "2.2.0.48161"
           }
         }
       },
@@ -39,19 +40,44 @@
       },
       "CommonHwLib/1.0.0": {
         "dependencies": {
-          "HwDriverInterface": "1.0.0"
+          "HwSettingsLib": "1.0.0",
+          "HwWrapperFactory": "1.0.0",
+          "HwWrapperInterface": "1.0.0"
         },
         "runtime": {
           "CommonHwLib.dll": {
-            "assemblyVersion": "1.0.0",
+            "assemblyVersion": "1.0.0.0",
             "fileVersion": "1.0.0.0"
           }
         }
       },
-      "HwDriverInterface/1.0.0": {
+      "HwSettingsLib/1.0.0": {
         "runtime": {
-          "HwDriverInterface.dll": {
-            "assemblyVersion": "1.0.0",
+          "HwSettingsLib.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "HwWrapperFactory/1.0.0": {
+        "dependencies": {
+          "HwWrapperInterface": "1.0.0",
+          "VectorXLWrapper": "1.0.0"
+        },
+        "runtime": {
+          "HwWrapperFactory.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "HwWrapperInterface/1.0.0": {
+        "dependencies": {
+          "HwSettingsLib": "1.0.0"
+        },
+        "runtime": {
+          "HwWrapperInterface.dll": {
+            "assemblyVersion": "1.0.0.0",
             "fileVersion": "1.0.0.0"
           }
         }
@@ -59,7 +85,7 @@
       "MessageDesignerLib/1.0.0": {
         "runtime": {
           "MessageDesignerLib.dll": {
-            "assemblyVersion": "1.0.0",
+            "assemblyVersion": "1.0.0.0",
             "fileVersion": "1.0.0.0"
           }
         }
@@ -70,8 +96,28 @@
         },
         "runtime": {
           "UtilityLib.dll": {
-            "assemblyVersion": "1.0.0",
+            "assemblyVersion": "1.0.0.0",
             "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "VectorXLWrapper/1.0.0": {
+        "dependencies": {
+          "HwSettingsLib": "1.0.0",
+          "HwWrapperInterface": "1.0.0"
+        },
+        "runtime": {
+          "VectorXLWrapper.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "vxlapi_NET/25.20.14.0": {
+        "runtime": {
+          "vxlapi_NET.dll": {
+            "assemblyVersion": "25.20.14.0",
+            "fileVersion": "25.20.14.0"
           }
         }
       }
@@ -83,7 +129,7 @@
       "serviceable": false,
       "sha512": ""
     },
-    "runtimepack.Microsoft.Windows.SDK.NET.Ref/10.0.26100.54": {
+    "runtimepack.Microsoft.Windows.SDK.NET.Ref/10.0.26100.57": {
       "type": "runtimepack",
       "serviceable": false,
       "sha512": ""
@@ -100,7 +146,17 @@
       "serviceable": false,
       "sha512": ""
     },
-    "HwDriverInterface/1.0.0": {
+    "HwSettingsLib/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "HwWrapperFactory/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "HwWrapperInterface/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""
@@ -112,6 +168,16 @@
     },
     "UtilityLib/1.0.0": {
       "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "VectorXLWrapper/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "vxlapi_NET/25.20.14.0": {
+      "type": "reference",
       "serviceable": false,
       "sha512": ""
     }
