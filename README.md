@@ -25,7 +25,7 @@
 
 **Target Platform:**
 
-Target OS Version: Windows 11 (10.0.26100.0) or above.
+Supported OS Version: Windows 10 Version 20H1 (Build 10.0.19041.0) or above.
 
 Tested in: Windows 11 Version 24H2 (OS Build 26100.4061)
 
