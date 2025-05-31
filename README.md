@@ -89,18 +89,68 @@ CANFD: C:\Users\Public\Documents\Vector\XL Driver Library 25.20.14.0\samples\NET
 	- wpf: is used for rich GUI (MVVM pattern is followed)
 
 - UtilityLib: includes utility methods, e.g., json serialization/deserialization methods.
-- 
+  
 - CommonHwLib: This is the main layer for hardware communication. It includes the wrapper classes for hardware drivers. handles the driver initialization and communication (sending/receiving of CAN messages)
-- 
+  
 - HwSettingsLib: includes definitions of types used for hardware communication.
-- 
+  
 - HwWrapperInterface: interface for Hardware wrapper library.
-- 
+  
 - VectorXLWrapper: vector hardware wrapper/driver library which implements the methods for vector driver initialization, transmitting/receiving messages etc.
--
+
 - HwWrapperFactory: includes the factory classes for returning the concrete object of the hardware wrapper/driver library.
-- 
+
 - MessageDesignerLib: includes the types used for defining a message to be transmitted.
+
+- WPFHostLib (Windows Forms Class Library): contains an ElementHost control to load a WPF view in winform application. This one library is used for loading all the WPF views created in this whole application. With this approach including multiple ElementHost controls is avoided in the application.
+
+To include and use ElementHost in this .NET 8 WinForms class library project:
+1) Added the following properties to .csproj file to enable WPF interop:
+
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+	  
+    <UseWindowsForms>true</UseWindowsForms>
+    <UseWPF>true</UseWPF>
+    
+  </PropertyGroup>
+
+</Project>
+
+This is required for the project to reference both WinForms and WPF assemblies, including WindowsFormsIntegration.dll that contains ElementHost.
+
+Below references are supposed to be automatically included when "<UseWPF>true</UseWPF>" was included in the project file:
+
+    WindowsFormsIntegration.dll
+
+    PresentationCore.dll
+
+    PresentationFramework.dll
+
+    WindowsBase.dll
+
+But, these didn't get added automatically.
+
+Therefore, below additional properties are added to .csproj file, to explicitly add the framework references:
+
+<ItemGroup>
+  <FrameworkReference Include="Microsoft.WindowsDesktop.App.WindowsForms" />
+  <FrameworkReference Include="Microsoft.WindowsDesktop.App.WPF" />
+</ItemGroup>
+
+
+
+2) And then add the below using:
+
+using System.Windows.Forms.Integration; // For ElementHost
+
+
+- WPFLibBase (WPF Class Library): Library containing the interface usercontrol for all the wpf view to implement, which will be used by WPFHostLib to initialize and load the view.
+
+- WPFTraceViewLib (WPF Class Library): it includes the view for showing the CAN trace of the communication.
+
+- WPFComSetupViewLib (WPF Class Library): it includes the view for modifying the communication settings and initialization of the CAN communication.
 
 
 **Overall Project structure:**
