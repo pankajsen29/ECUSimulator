@@ -108,14 +108,10 @@ To include and use ElementHost in this .NET 8 WinForms class library project:
 1) Added the following properties to .csproj file to enable WPF interop:
 
 <Project Sdk="Microsoft.NET.Sdk">
-
-  <PropertyGroup>
-	  
+  <PropertyGroup>  
     <UseWindowsForms>true</UseWindowsForms>
     <UseWPF>true</UseWPF>
-    
   </PropertyGroup>
-
 </Project>
 
 This is required for the project to reference both WinForms and WPF assemblies, including WindowsFormsIntegration.dll that contains ElementHost.
