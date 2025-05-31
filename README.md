@@ -107,8 +107,9 @@ CANFD: C:\Users\Public\Documents\Vector\XL Driver Library 25.20.14.0\samples\NET
 To include and use ElementHost in this .NET 8 WinForms class library project:
 1) Added the following properties to .csproj file to enable WPF interop:
 
+```
 <Project Sdk="Microsoft.NET.Sdk">  <PropertyGroup>      <UseWindowsForms>true</UseWindowsForms>    <UseWPF>true</UseWPF>  </PropertyGroup></Project>
-
+```
 This is required for the project to reference both WinForms and WPF assemblies, including WindowsFormsIntegration.dll that contains ElementHost.
 
 Below references are supposed to be automatically included when "<UseWPF>true</UseWPF>" was included in the project file:
