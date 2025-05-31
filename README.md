@@ -1,18 +1,19 @@
-**ECU Simulator:**
-
-**Scope:**
+**<ins>Name:<ins>**
+- ECU Simulator
+  
+**<ins>Scope:<ins>**
 - Automotive domain
 - Basic simulation of CAN request/response
 - CAN/CANFD tracing
 
-**Description:**
+**<ins>Description:<ins>**
 - A simple GUI application to configure request/response (CAN), where:
     - request: a CAN message to be received from tester application
     - response: a CAN message typically an ECU would send on the CAN Bus corresponding to a the request message
 - Utilizes Vector Virtual Interface, thereby removing the need of any hardwares.
 - Testable for CANFD communications too, (i.e., with payload higher than 8 bytes)
 
-**Motivation:**
+**<ins>Motivation:<ins>**
 - the main idea is to enable automotive tool developers perform testing without the need of physical hardwares (e.g., powerpack/ECU and the ECU interface hardware).
 - to have a simple UI unlike already available softwares in market (e.g., CANalyzer (link) or BUSMASTER (link)).
 - Unlike CANalyzer:
@@ -23,13 +24,11 @@
     - no cost for the license (though BUSMASTER is free for testing CAN communication, CANFD test feature is licensed)  
 
 
-**Target Platform:**
+**<ins>Target Platform:<ins>**
+- Supported OS Version: Windows 10 Version 20H1 (Build 10.0.19041.0) or above.
+- Tested in: Windows 11 Version 24H2 (OS Build 26100.4061)
 
-Supported OS Version: Windows 10 Version 20H1 (Build 10.0.19041.0) or above.
-
-Tested in: Windows 11 Version 24H2 (OS Build 26100.4061)
-
-**Prerequisites:**
+**<ins>Prerequisites:<ins>**
 - .NET 8.0
 - Vector Driver: Go to Vector Download Center:
   
@@ -37,7 +36,7 @@ Tested in: Windows 11 Version 24H2 (OS Build 26100.4061)
   
 and download the latest version of the followings:
 
-(1). Vector Driver Setup for Windows 10 and 11:
+<ins>(1). Vector Driver Setup for Windows 10 and 11:<ins>
 
 Install only the "Mandatory Components" (note: install the specific driver corresponding to an already available hardware interface from Vector) which include the followings and are enough for performing the tests with this application:
 	a) Virtual CAN Bus
@@ -50,7 +49,7 @@ Used version for testing: Vector Driver Setup 25.20.0 for Windows 10 and 11
 
 https://www.vector.com/int/en/download/vector-driver-setup-25-20-0-for-windows-10-and-11/
 
-(2). xl-driver-library:
+<ins>(2). xl-driver-library:<ins>
 
 Install and (optionally) copy the below dlls from "C:\Users\Public\Documents\Vector\XL Driver Library 25.20.14.0\bin" to solution's 'Ref' folder for example:
 a) vxlapi.dll [XL Driver Library DLL. This file should be present in the folder with the application.]
@@ -62,28 +61,21 @@ from which "vxlapi_NET.dll" is referenced from the project "VectorXLWrapper" and
 Note: There are no official C# code samples from Vector specifically targeting .NET 8 or higher for the XL-Driver-Library available on the public Vector website or in their documentation as of now. The official Vector XL-Driver-Library package includes a .NET wrapper (vxlapi_NET) and C# samples (local paths are given below), but these are generally based on older .NET versions (such as .NET Framework or .NET Core 3.x). However, the .NET wrapper is compatible with .NET 3.5 and above, therefore I have used it in this .NET 8 project application.
 
 Referred version: XL Driver Library 25.20.14
-
-https://www.vector.com/se/en/download/xl-driver-library-25-20-14/
+ - https://www.vector.com/se/en/download/xl-driver-library-25-20-14/
 
 API documentations: 
-online: 
+ - online: https://www.vector.com/se/en/download/manual-xl-driver-library/
+ - local path once installed: C:\Users\Public\Documents\Vector\XL Driver Library 25.20.14.0\doc\XL Driver Library - Description.pdf
 
-https://www.vector.com/se/en/download/manual-xl-driver-library/
-
-local path once installed: 
-
-C:\Users\Public\Documents\Vector\XL Driver Library 25.20.14.0\doc\XL Driver Library - Description.pdf
-
-Factsheet: https://cdn.vector.com/cms/content/products/XL_Driver_Library/Docs/XL_Driver_Library_Factsheet_EN_01.pdf
+Factsheet: 
+ - https://cdn.vector.com/cms/content/products/XL_Driver_Library/Docs/XL_Driver_Library_Factsheet_EN_01.pdf
 
 .NET samples can be referred here:
-
-CAN: C:\Users\Public\Documents\Vector\XL Driver Library 25.20.14.0\samples\NET\xlCANdemo_Csharp
-
-CANFD: C:\Users\Public\Documents\Vector\XL Driver Library 25.20.14.0\samples\NET\xlCANFDdemo_Csharp
+ - CAN: C:\Users\Public\Documents\Vector\XL Driver Library 25.20.14.0\samples\NET\xlCANdemo_Csharp
+ - CANFD: C:\Users\Public\Documents\Vector\XL Driver Library 25.20.14.0\samples\NET\xlCANFDdemo_Csharp
 
 
-**Overall Projects Description:**
+**<ins>Overall Projects Description:<ins>**
 - ECUSim: The is the main GUI host application. It is a Winform application which also supports addition of WPF projects (notice "<UseWPF>True</UseWPF>" in ECUSim.csproj file).
 	- winforms: used for faster development.
 	- wpf: is used for rich GUI (MVVM pattern is followed)
@@ -105,7 +97,7 @@ CANFD: C:\Users\Public\Documents\Vector\XL Driver Library 25.20.14.0\samples\NET
 - WPFHostLib (Windows Forms Class Library): contains an ElementHost control to load a WPF view in winform application. This one library is used for loading all the WPF views created in this whole application. With this approach including multiple ElementHost controls is avoided in the application.
 
 To include and use ElementHost in this .NET 8 WinForms class library project:
-1) Added the following properties to .csproj file to enable WPF interop:
+<ins>1) Added the following properties to .csproj file to enable WPF interop:<ins>
 
 ```
 <Project Sdk="Microsoft.NET.Sdk">
@@ -131,17 +123,18 @@ But, these didn't get added automatically.
 
 Therefore, below additional properties are added to .csproj file, to explicitly add the framework references:
 
+```
 <ItemGroup>
   <FrameworkReference Include="Microsoft.WindowsDesktop.App.WindowsForms" />
   <FrameworkReference Include="Microsoft.WindowsDesktop.App.WPF" />
 </ItemGroup>
+```
 
 
-
-2) And then add the below using:
-
+<ins>2) And then add the below using:<ins>
+```
 using System.Windows.Forms.Integration; // For ElementHost
-
+```
 
 - WPFLibBase (WPF Class Library): Library containing the interface usercontrol for all the wpf view to implement, which will be used by WPFHostLib to initialize and load the view.
 
@@ -150,27 +143,28 @@ using System.Windows.Forms.Integration; // For ElementHost
 - WPFComSetupViewLib (WPF Class Library): it includes the view for modifying the communication settings and initialization of the CAN communication.
 
 
-**Overall Project structure:**
-- todo: class relations to be included
-- todo: relations between the assemblies also are to be shown
+**<ins>Overall Project structure:<ins>**
+ - todo: class relations to be included
+ - todo: relations between the assemblies also are to be shown
 
-**Functailities:**
+**<ins>Functailities:<ins>**
+  - messages (request-response) setup: CAN messages
+  - trace window: displays CAN messages
+
+**<ins>Test Setup:<ins>**
  - communication setup: hardware setup
- - messages (request-response) setup: CAN messages
- - trace window: displays CAN messages
+  
+**<ins>Testing:<ins>**
+ - Steps to be shown using Vector Virtual CAN Driver
 
-**Test Setup:**
-
-**Testing:**
-Steps to be shown using Vector Virtual CAN Driver
-
-**Limitation:** (Temporary)
- - the hardware communication code supports only Vector interfaces at the moment, hence can't be used with any other hardware interfaces (e.g., PEAK, DCI, ETAS etc.). But have plan to support in case the planned primary purpose of this tool is observed. Design is done considering this point.
+**<ins>Limitation:<ins>**
+ - (Temporary) the hardware communication code supports only Vector interfaces at the moment, hence can't be used with any other hardware interfaces (e.g., PEAK, DCI, ETAS etc.). But have plan to support in case the planned primary purpose of this tool is observed. Design is done considering this point.
  
-**Logging:**
-Log4net (to be included)
+**<ins>Logging:<ins>**
+ - Log4net (to be included)
 
-**CMD-line execution:**
-- todo: for the purpose of automation
+**<ins>CMD-line execution:<ins>**
+ - todo: for the purpose of automation
 
-**Installer:**
+**<ins>Installer:<ins>**
+ - installer msi project to be created
