@@ -144,18 +144,18 @@ using System.Windows.Forms.Integration; // For ElementHost
 
 
 **<ins>Overall Project structure:<ins>**
- - todo: class relations to be included
- - todo: relations between the assemblies also are to be shown
+ - todo: component diagram to be included
 
 **<ins>Functailities:<ins>**
-  - messages (request-response) setup: CAN messages
-  - trace window: displays CAN messages
+ - todo: sequence diagram to be included
 
 **<ins>Test Setup:<ins>**
- - communication setup: hardware setup
-  
-**<ins>Testing:<ins>**
- - Steps to be shown using Vector Virtual CAN Driver
+ - screenshot for communication setup: hardware setup for Vector Virtual CAN Driver
+ - screenshot for messages (request-response) setup: CAN messages
+   
+**<ins>Testing and demo:<ins>**
+ - screenshot of the test steps
+ - screenshot of the trace window showing CAN messages
 
 **<ins>Limitation:<ins>**
  - (Temporary) the hardware communication code supports only Vector interfaces at the moment, hence can't be used with any other hardware interfaces (e.g., PEAK, DCI, ETAS etc.). But have plan to support in case the planned primary purpose of this tool is observed. Design is done considering this point.
