@@ -1,10 +1,11 @@
-﻿using CommonHwLib;
-using HardwareDriverLayer.HwSettings;
-using MessageDesignerLib;
-using System;
+﻿using System;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using CommonHwLib;
+using HardwareDriverLayer.HwSettings;
+using MessageDesignerLib;
 using UtilityLib;
+using WPFHostLib;
 using Message = MessageDesignerLib.Message;
 
 namespace ECUSim
@@ -18,10 +19,26 @@ namespace ECUSim
 
         private void ECUSimMain_Load(object sender, EventArgs e)
         {
-            LoadRequestResponseSubtab();
+            LoadTraceViewTab();
+            LoadCommunicationSetupTab();
+            LoadRequestResponseTab();
         }
 
-        private async void LoadRequestResponseSubtab()
+        private void LoadCommunicationSetupTab()
+        {
+            var communicationSetupUserControl = new WpfHostUserControl("WPFComSetupViewLib");
+            tcMain.TabPages[2].Controls.Add(communicationSetupUserControl);
+            communicationSetupUserControl.Dock = DockStyle.Fill;
+        }
+
+        private void LoadTraceViewTab()
+        {
+            var traceViewUserControl = new WpfHostUserControl("WPFTraceViewLib");
+            tcMain.TabPages[0].Controls.Add(traceViewUserControl);
+            traceViewUserControl.Dock = DockStyle.Fill;
+        }
+
+        private async void LoadRequestResponseTab()
         {
             await LoadMessageDefinition();
             await LoadMessagesConfig();
@@ -84,14 +101,14 @@ namespace ECUSim
         private void btnAddMessage_Click(object sender, EventArgs e)
         {
 
-        }
+        }        
 
         /// <summary>
         /// temp function, to be reworked later
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void btnInitHwDriver_Click(object sender, EventArgs e)
+        private void InitCANDriver_Click(object sender, EventArgs e)
         {
             var comManager = new CommunicationManager();
 

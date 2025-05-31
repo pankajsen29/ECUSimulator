@@ -40,13 +40,12 @@ namespace ECUSim
             txtMessagesConfig = new System.Windows.Forms.TextBox();
             btnAddMessage = new System.Windows.Forms.Button();
             tabCommunicationSetup = new System.Windows.Forms.TabPage();
-            btnInitHwDriver = new System.Windows.Forms.Button();
+            InitCANDriver = new System.Windows.Forms.Button();
             StatusInfo.SuspendLayout();
             tlpMasterLayout.SuspendLayout();
             tcMain.SuspendLayout();
             tabRequestReplySetup.SuspendLayout();
             tableLayoutPanel1.SuspendLayout();
-            tabCommunicationSetup.SuspendLayout();
             SuspendLayout();
             // 
             // StatusInfo
@@ -75,6 +74,7 @@ namespace ECUSim
             tlpMasterLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 15F));
             tlpMasterLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 15F));
             tlpMasterLayout.Controls.Add(tcMain, 0, 1);
+            tlpMasterLayout.Controls.Add(InitCANDriver, 2, 0);
             tlpMasterLayout.Dock = System.Windows.Forms.DockStyle.Fill;
             tlpMasterLayout.Location = new System.Drawing.Point(0, 0);
             tlpMasterLayout.Margin = new System.Windows.Forms.Padding(2);
@@ -183,7 +183,6 @@ namespace ECUSim
             // 
             // tabCommunicationSetup
             // 
-            tabCommunicationSetup.Controls.Add(btnInitHwDriver);
             tabCommunicationSetup.Location = new System.Drawing.Point(4, 24);
             tabCommunicationSetup.Margin = new System.Windows.Forms.Padding(2);
             tabCommunicationSetup.Name = "tabCommunicationSetup";
@@ -193,15 +192,15 @@ namespace ECUSim
             tabCommunicationSetup.Text = "Communication Setup";
             tabCommunicationSetup.UseVisualStyleBackColor = true;
             // 
-            // btnInitHwDriver
+            // InitCANDriver
             // 
-            btnInitHwDriver.Location = new System.Drawing.Point(33, 40);
-            btnInitHwDriver.Name = "btnInitHwDriver";
-            btnInitHwDriver.Size = new System.Drawing.Size(162, 23);
-            btnInitHwDriver.TabIndex = 0;
-            btnInitHwDriver.Text = "Initialize CAN Driver";
-            btnInitHwDriver.UseVisualStyleBackColor = true;
-            btnInitHwDriver.Click += btnInitHwDriver_Click;
+            InitCANDriver.Location = new System.Drawing.Point(972, 3);
+            InitCANDriver.Name = "InitCANDriver";
+            InitCANDriver.Size = new System.Drawing.Size(137, 23);
+            InitCANDriver.TabIndex = 1;
+            InitCANDriver.Text = "Initialize CAN Driver";
+            InitCANDriver.UseVisualStyleBackColor = true;
+            InitCANDriver.Click += InitCANDriver_Click;
             // 
             // ECUSimMain
             // 
@@ -223,7 +222,6 @@ namespace ECUSim
             tabRequestReplySetup.PerformLayout();
             tableLayoutPanel1.ResumeLayout(false);
             tableLayoutPanel1.PerformLayout();
-            tabCommunicationSetup.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
         }
@@ -240,7 +238,7 @@ namespace ECUSim
         private System.Windows.Forms.TextBox txtMessage;
         private System.Windows.Forms.TextBox txtMessagesConfig;
         private System.Windows.Forms.Button btnAddMessage;
-        private System.Windows.Forms.Button btnInitHwDriver;
+        private System.Windows.Forms.Button InitCANDriver;
     }
 }
 
