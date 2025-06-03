@@ -22,4 +22,8 @@
 	<ItemGroup>
 	  <ProjectReference Include="..\WPFLibBase\WPFLibBase.csproj" />
 	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Model\" />
+	</ItemGroup>
 </Project>
