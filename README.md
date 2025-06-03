@@ -28,6 +28,13 @@
 - Supported OS Version: Windows 10 Version 20H1 (Build 10.0.19041.0) or above.
 - Tested in: Windows 11 Version 24H2 (OS Build 26100.4061)
 
+**<ins>Technologies, frameworks, patterns and protocols used :<ins>**
+- C#. NET (Winform, WPF)
+- MVVM
+- JSON
+- Factory method pattern
+- CAN and CANFD
+  
 **<ins>Prerequisites:<ins>**
 - .NET 8.0
 - Vector Driver: Go to Vector Download Center:
