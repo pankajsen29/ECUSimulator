@@ -14,5 +14,5 @@ namespace HardwareDriverLayer.WrapperInterface
         public abstract bool SendMessage(UInt32 id, byte len, byte[] data);
         public abstract bool ReceiveMessage();
         public abstract string GetLastErrorMessage();
-    }
+    }   
 }

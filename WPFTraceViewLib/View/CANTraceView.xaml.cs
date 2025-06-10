@@ -1,4 +1,5 @@
-﻿using WPFLibBase;
+﻿using CommonHwLib;
+using WPFLibBase;
 
 namespace WPFTraceViewLib.View
 {
@@ -12,7 +13,7 @@ namespace WPFTraceViewLib.View
             InitializeComponent();
         }
 
-        public override bool OnStart()
+        public override bool OnStart(CommunicationManager comManager)
         {
             //get the initialization
             return true;

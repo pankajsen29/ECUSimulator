@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
 	  <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
@@ -20,10 +20,8 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\CommonHwLib\CommonHwLib.csproj" />
+	  <ProjectReference Include="..\UtilityLib\UtilityLib.csproj" />
 	  <ProjectReference Include="..\WPFLibBase\WPFLibBase.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="Model\" />
 	</ItemGroup>
 </Project>

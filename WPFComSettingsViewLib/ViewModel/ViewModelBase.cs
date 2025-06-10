@@ -1,4 +1,6 @@
-﻿namespace WPFComSetupViewLib.ViewModel
+﻿using WPFComSettingsViewLib.Model;
+
+namespace WPFComSettingsViewLib.ViewModel
 {
     /// <summary>
     /// base class for ViewModels, inheriting from NotifyPropertyChangedBase and implementing IDisposable.

@@ -116,6 +116,7 @@
       },
       "WPFHostLib/1.0.0": {
         "dependencies": {
+          "CommonHwLib": "1.0.0",
           "WPFLibBase": "1.0.0"
         },
         "runtime": {
@@ -126,6 +127,9 @@
         }
       },
       "WPFLibBase/1.0.0": {
+        "dependencies": {
+          "CommonHwLib": "1.0.0"
+        },
         "runtime": {
           "WPFLibBase.dll": {
             "assemblyVersion": "1.0.0.0",

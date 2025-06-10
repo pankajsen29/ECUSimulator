@@ -12,28 +12,36 @@ namespace ECUSim
 {
     public partial class ECUSimMain : Form
     {
+        private static readonly Lazy<CommunicationManager> _sComManager = new Lazy<CommunicationManager>(() => new CommunicationManager());
+
         public ECUSimMain()
         {
             InitializeComponent();
+            GetCommunicationManager().ApplyUpdateOfCommunicationSettings += ApplyUpdatedCommunicationSettings;
+        }
+
+        private static CommunicationManager GetCommunicationManager()
+        {
+            return _sComManager.Value;
         }
 
         private void ECUSimMain_Load(object sender, EventArgs e)
         {
-            LoadTraceViewTab();
-            LoadCommunicationSetupTab();
+            LoadTraceViewTab();            
             LoadRequestResponseTab();
+            LoadCommunicationSettingsTab();
         }
 
-        private void LoadCommunicationSetupTab()
+        private void LoadCommunicationSettingsTab()
         {
-            var communicationSetupUserControl = new WpfHostUserControl("WPFComSetupViewLib");
-            tcMain.TabPages[2].Controls.Add(communicationSetupUserControl);
-            communicationSetupUserControl.Dock = DockStyle.Fill;
+            var communicationSettingsUserControl = new WpfHostUserControl("WPFComSettingsViewLib", GetCommunicationManager());
+            tcMain.TabPages[2].Controls.Add(communicationSettingsUserControl);
+            communicationSettingsUserControl.Dock = DockStyle.Fill;
         }
 
         private void LoadTraceViewTab()
         {
-            var traceViewUserControl = new WpfHostUserControl("WPFTraceViewLib");
+            var traceViewUserControl = new WpfHostUserControl("WPFTraceViewLib", GetCommunicationManager());
             tcMain.TabPages[0].Controls.Add(traceViewUserControl);
             traceViewUserControl.Dock = DockStyle.Fill;
         }
@@ -101,17 +109,31 @@ namespace ECUSim
         private void btnAddMessage_Click(object sender, EventArgs e)
         {
 
-        }        
+        }
+
+        private void ApplyUpdatedCommunicationSettings()
+        {
+            InitCANDriver_Click(null, EventArgs.Empty);
+        }
 
         /// <summary>
-        /// temp function, to be reworked later
+        /// check for comSettings json file in Documents folder
+        /// if exists: 
+        ///     deserialize it and load it
+        ///     and initialize active comSettings object with the loaded settings
+        ///     and then call GetCommunicationManager().InitializeCommunicationDriver(comSettings);
+        /// 
+        /// if doesn't exist:
+        ///     show Yes/No Messagebox to ask the user if the driver needs to be initialized with default settings
+        ///         if Yes:
+        ///             then do the below to initialize active comSettings object with default values
+        ///             and then call GetCommunicationManager().InitializeCommunicationDriver(comSettings);
+        ///         else abort initialization
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void InitCANDriver_Click(object sender, EventArgs e)
         {
-            var comManager = new CommunicationManager();
-
             //CommunicationSettings comSettings = new CommunicationSettings
             //{
             //    ACTIVE_CAN_HW = CAN_HW_INTERFACE.e_VECTOR_XL,
@@ -136,8 +158,12 @@ namespace ECUSim
                     data_sjw = 2
                 }
             };
-
-            MessageBox.Show(comManager.InitializeCommunicationDriver(comSettings).ToString());
+            var initCANStatus = GetCommunicationManager().InitializeCommunicationDriver(comSettings);
+            InitCANDriver.BackColor = initCANStatus ? System.Drawing.Color.LightGreen : System.Drawing.Color.Red;
+            if (!initCANStatus)
+            {
+                MessageBox.Show($"Error initializing CAN driver: {GetCommunicationManager().LastErrorMessage}", "Initialization Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 }

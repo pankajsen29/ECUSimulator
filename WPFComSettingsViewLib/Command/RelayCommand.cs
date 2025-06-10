@@ -1,6 +1,6 @@
 ﻿using System.Windows.Input;
 
-namespace WPFComSetupViewLib.Command
+namespace WPFComSettingsViewLib.Command
 {
     /// <summary>
     /// This is a command whose sole purpose is to relay its functionality to other objects by invoking delegates.

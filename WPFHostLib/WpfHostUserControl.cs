@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using CommonHwLib;
+using System.Reflection;
 using System.Windows.Forms.Integration;
 using WPFLibBase;
 
@@ -9,11 +10,13 @@ namespace WPFHostLib
         private ElementHost _wpfCtrlHost;
         private string _wpfAssemblyName;
         private WpfUserControl? _wpfLib;
+        private CommunicationManager _comManager;
 
-        public WpfHostUserControl(string wpfAssemblyName)
+        public WpfHostUserControl(string wpfAssemblyName, CommunicationManager comManager)
         {
             InitializeComponent();
             _wpfAssemblyName = wpfAssemblyName;
+            _comManager = comManager;
             _wpfCtrlHost = new ElementHost();
         }
 
@@ -25,7 +28,7 @@ namespace WPFHostLib
             _wpfLib = WpfViewFactory.GetWpfViewInstance(_wpfAssemblyName);
             if (_wpfLib != null)
             {
-                _wpfLib.OnStart();
+                _wpfLib.OnStart(_comManager);
                 _wpfCtrlHost.Child = _wpfLib;
             }
         }

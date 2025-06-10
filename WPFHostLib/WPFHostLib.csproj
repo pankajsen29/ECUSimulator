@@ -20,6 +20,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\CommonHwLib\CommonHwLib.csproj" />
 	  <ProjectReference Include="..\WPFLibBase\WPFLibBase.csproj" />
 	</ItemGroup>
 

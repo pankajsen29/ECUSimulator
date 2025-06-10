@@ -18,4 +18,8 @@
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
 		<OutputPath>..\Output\</OutputPath>
 	</PropertyGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\CommonHwLib\CommonHwLib.csproj" />
+	</ItemGroup>
 </Project>

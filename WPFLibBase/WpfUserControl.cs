@@ -1,3 +1,4 @@
+using CommonHwLib;
 using System.Windows.Controls;
 
 namespace WPFLibBase
@@ -8,7 +9,7 @@ namespace WPFLibBase
         /// for passing initialization data to the control
         /// </summary>
         /// <returns></returns>
-        public abstract bool OnStart();
+        public abstract bool OnStart(CommunicationManager comManager);
 
         /// <summary>
         /// for cleaning up resources or saving state before the control is closed
