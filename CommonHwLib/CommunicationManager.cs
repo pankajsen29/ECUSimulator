@@ -8,6 +8,8 @@ namespace CommonHwLib
 {
     public class CommunicationManager
     {
+        public string MessageConfigFile { get; set; } = string.Empty;
+        public string CommunicationSettingsFile { get; set; } = string.Empty;
 
         public Action ApplyUpdateOfCommunicationSettings { get; set; }
 

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace WPFComSettingsViewLib.Model
+﻿namespace WPFComSettingsViewLib.Model
 {
     public class PropertyDescriptor : NotifyPropertyChangedBase
     {
@@ -18,7 +12,10 @@ namespace WPFComSettingsViewLib.Model
             {
                 _value = value;
                 OnPropertyChanged();
+                Setter?.Invoke(value); // Update source object
             }
         }
+        public Action<object> Setter { get; set; }
+
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using CommonHwLib;
@@ -17,6 +18,8 @@ namespace ECUSim
         public ECUSimMain()
         {
             InitializeComponent();
+            GetCommunicationManager().CommunicationSettingsFile = StaticKeys.Communication_Settings_File;
+            GetCommunicationManager().MessageConfigFile = StaticKeys.Messages_Config_File;
             GetCommunicationManager().ApplyUpdateOfCommunicationSettings += ApplyUpdatedCommunicationSettings;
         }
 

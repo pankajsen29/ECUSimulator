@@ -1,16 +1,9 @@
 ﻿using CommonHwLib;
 using HardwareDriverLayer.HwSettings;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+using System.IO;
 using System.Windows.Input;
 using UtilityLib;
-using Windows.Media.Devices;
 using WPFComSettingsViewLib.Command;
 using PropertyDescriptor = WPFComSettingsViewLib.Model.PropertyDescriptor;
 
@@ -33,10 +26,32 @@ namespace WPFComSettingsViewLib.ViewModel
             }
         }
 
+        private bool _isComSettingsJSONFileFound = false;
+        public bool IsComSettingsJSONFileFound
+        {
+            get => _isComSettingsJSONFileFound;
+            set
+            {
+                _isComSettingsJSONFileFound = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private ObservableCollection<PropertyDescriptor> _comSettingsCollection;
         /// <summary>
-        /// Don't need ObservableCollection here, as we don't need to add/remove rows (here each property) dynamically.
+        /// This property also has to raise OnPropertyChanged(), bcause a new collection gets assigned after deserialization,
+        /// without this the DataGrid will not be notified
         /// </summary>
-        public List<PropertyDescriptor> ComSettingsCollection { get; set; }
+        public ObservableCollection<PropertyDescriptor> ComSettingsCollection
+        {
+            get => _comSettingsCollection;
+            set
+            {
+                _comSettingsCollection = value;
+                OnPropertyChanged();
+            }
+        }
+
 
         public ICommand SaveComSettingsCommand { get; private set; }
 
@@ -52,7 +67,104 @@ namespace WPFComSettingsViewLib.ViewModel
         public bool OnStart(CommunicationManager comManager)
         {
             _comManager = comManager;
+            CommunicationSettingsJSONFile = _comManager.CommunicationSettingsFile;
             return true;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        private async Task LoadComSettings()
+        {
+            //try to load the Settings from comSettings.json file in public Documents folder.
+            //if file exists, deserialize it and load it
+            if (File.Exists(CommunicationSettingsJSONFile))
+            {
+                IsComSettingsJSONFileFound = true;
+                _comSettings = (CommunicationSettings)await JsonSerializationHelper.Deserialize<CommunicationSettings>(CommunicationSettingsJSONFile);
+            }
+            else
+            {
+                //if the file does not exist, give feedback to user and load the default settings
+                IsComSettingsJSONFileFound = false;
+                LoadDefaultComSettings();
+            }
+
+            if (null != _comSettings)
+            {
+                //Handling of Source Object Updates: each PropertyDescriptor is created by connecting them to the original object's ("CommunicationSettings") properties.
+                //also PropertyDescriptor implements INPC as we need UI updates to be propagated back
+                ComSettingsCollection = new ObservableCollection<PropertyDescriptor>
+                {
+                    new PropertyDescriptor
+                    {
+                        Name = "CAN HW",
+                        Value = _comSettings.ACTIVE_CAN_HW,
+                        Setter = (val) => _comSettings.ACTIVE_CAN_HW = Enum.Parse<CAN_HW_INTERFACE>(val.ToString())
+                    },
+                    new PropertyDescriptor
+                    {
+                        Name = "CAN ENV",
+                        Value = _comSettings.ACTIVE_CAN_ENV,
+                        Setter = (val) => _comSettings.ACTIVE_CAN_ENV = Enum.Parse<CAN_ENV>(val.ToString())
+                    },
+                    new PropertyDescriptor
+                    {
+                        Name = "DATA FRAME",
+                        Value = _comSettings.ACTIVE_DATA_FRAME,
+                        Setter = (val) => _comSettings.ACTIVE_DATA_FRAME = Enum.Parse<CAN_DATA_FRAME_TYPE>(val.ToString())
+                    },
+                    new PropertyDescriptor
+                    {
+                        Name = "CANFD_ARB_BAUDRATE",
+                        Value = _comSettings.ACTIVE_CANFD_SETTINGS.arb_baudrate,
+                        Setter = (val) => _comSettings.ACTIVE_CANFD_SETTINGS.arb_baudrate = Convert.ToUInt32(val)
+                    },
+                    new PropertyDescriptor
+                    {
+                        Name = "CANFD_ARB_TSEG1",
+                        Value = _comSettings.ACTIVE_CANFD_SETTINGS.arb_tseg1,
+                        Setter = (val) => _comSettings.ACTIVE_CANFD_SETTINGS.arb_tseg1 = Convert.ToUInt32(val)
+                    },
+                    new PropertyDescriptor
+                    {
+                        Name = "CANFD_ARB_TSEG2",
+                        Value = _comSettings.ACTIVE_CANFD_SETTINGS.arb_tseg2,
+                        Setter = (val) => _comSettings.ACTIVE_CANFD_SETTINGS.arb_tseg2 = Convert.ToUInt32(val)
+                    },
+                    new PropertyDescriptor
+                    {
+                        Name = "CANFD_ARB_SJW",
+                        Value = _comSettings.ACTIVE_CANFD_SETTINGS.arb_sjw,
+                        Setter = (val) => _comSettings.ACTIVE_CANFD_SETTINGS.arb_sjw = Convert.ToUInt32(val)
+                    },
+                    new PropertyDescriptor
+                    {
+                        Name = "CANFD_DATA_BAUDRATE",
+                        Value = _comSettings.ACTIVE_CANFD_SETTINGS.data_baudrate,
+                        Setter = (val) => _comSettings.ACTIVE_CANFD_SETTINGS.data_baudrate = Convert.ToUInt32(val)
+                    },
+                    new PropertyDescriptor
+                    {
+                        Name = "CANFD_DATA_TSEG1",
+                        Value = _comSettings.ACTIVE_CANFD_SETTINGS.data_tseg1,
+                        Setter = (val) => _comSettings.ACTIVE_CANFD_SETTINGS.data_tseg1 = Convert.ToUInt32(val)
+                    },
+                    new PropertyDescriptor
+                    {
+                        Name = "CANFD_DATA_TSEG2",
+                        Value = _comSettings.ACTIVE_CANFD_SETTINGS.data_tseg2,
+                        Setter = (val) => _comSettings.ACTIVE_CANFD_SETTINGS.data_tseg2 = Convert.ToUInt32(val)
+                    },
+                    new PropertyDescriptor
+                    {
+                        Name = "CANFD_DATA_SJW",
+                        Value = _comSettings.ACTIVE_CANFD_SETTINGS.data_sjw,
+                        Setter = (val) => _comSettings.ACTIVE_CANFD_SETTINGS.data_sjw = Convert.ToUInt32(val)
+                    }
+                };
+            }
         }
 
         private void LoadDefaultComSettings()
@@ -81,45 +193,24 @@ namespace WPFComSettingsViewLib.ViewModel
             Task.Run(async () => await SaveComSettings());
         }
 
+        /// <summary>
+        /// saves the communication settings to a JSON file and 
+        /// notifies the communication manager to re-initialize the driver with the new settings.
+        /// </summary>
+        /// <returns></returns>
         private async Task SaveComSettings()
         {
             //save the json file
-            //var jsonSettings = (string)(await JsonSerializationHelper.SerializeObject<CommunicationSettings>(comSettings, true));
-
-            //notify to re-init the CAN driver with the new settings
-            //if (_comManager != null)
-            //{
-            //    _comManager.NotifyUpdateOfCommunicationSettings();
-            //}
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        private async Task LoadComSettings()
-        {
-            //todo: load the comSettings from a json file (if exists) in Documents folder.
-            //if file exists, deserialize it and load it
-
-            //if the file does not exist, inform the user and load the default settings
-            LoadDefaultComSettings();
-
-            //Handle Source Object Updates: Ensure your source object implements INPC if you need UI updates from code changes:
-            ComSettingsCollection = new List<PropertyDescriptor>
+            if (null != _comSettings)
             {
-                new PropertyDescriptor { Name = "CAN HW", Value = _comSettings.ACTIVE_CAN_HW.ToString() },
-                new PropertyDescriptor { Name = "CAN ENV", Value = _comSettings.ACTIVE_CAN_ENV.ToString() },
-                new PropertyDescriptor { Name = "DATA FRAME", Value = _comSettings.ACTIVE_DATA_FRAME.ToString() },
-                new PropertyDescriptor { Name = "arb_baudrate", Value = _comSettings.ACTIVE_CANFD_SETTINGS.arb_baudrate.ToString() },
-                new PropertyDescriptor { Name = "arb_tseg1", Value = _comSettings.ACTIVE_CANFD_SETTINGS.arb_tseg1.ToString() },
-                new PropertyDescriptor { Name = "arb_tseg2", Value = _comSettings.ACTIVE_CANFD_SETTINGS.arb_tseg2.ToString() },
-                new PropertyDescriptor { Name = "arb_sjw", Value = _comSettings.ACTIVE_CANFD_SETTINGS.arb_sjw.ToString() },
-                new PropertyDescriptor { Name = "data_baudrate", Value = _comSettings.ACTIVE_CANFD_SETTINGS.data_baudrate.ToString() },
-                new PropertyDescriptor { Name = "data_tseg1", Value = _comSettings.ACTIVE_CANFD_SETTINGS.data_tseg1.ToString() },
-                new PropertyDescriptor { Name = "data_tseg2", Value = _comSettings.ACTIVE_CANFD_SETTINGS.data_tseg2.ToString() },
-                new PropertyDescriptor { Name = "data_sjw", Value = _comSettings.ACTIVE_CANFD_SETTINGS.data_sjw.ToString() }
-            };
+                await JsonSerializationHelper.Serialize(CommunicationSettingsJSONFile, _comSettings);
+            }
+
+            //notify to re - init the CAN driver with the new settings
+            if (_comManager != null)
+            {
+                _comManager.NotifyUpdateOfCommunicationSettings();
+            }
         }
     }
 }
