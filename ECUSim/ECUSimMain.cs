@@ -1,10 +1,10 @@
-﻿using System;
+﻿using CommonHwLib;
+using MessageDesignerLib;
+using System;
 using System.IO;
+using System.Security.Principal;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using CommonHwLib;
-using HardwareDriverLayer.HwSettings;
-using MessageDesignerLib;
 using UtilityLib;
 using WPFHostLib;
 using Message = MessageDesignerLib.Message;
@@ -13,38 +13,52 @@ namespace ECUSim
 {
     public partial class ECUSimMain : Form
     {
-        private static readonly Lazy<CommunicationManager> _sComManager = new Lazy<CommunicationManager>(() => new CommunicationManager());
-
         public ECUSimMain()
         {
             InitializeComponent();
-            GetCommunicationManager().CommunicationSettingsFile = StaticKeys.Communication_Settings_File;
-            GetCommunicationManager().MessageConfigFile = StaticKeys.Messages_Config_File;
-            GetCommunicationManager().ApplyUpdateOfCommunicationSettings += ApplyUpdatedCommunicationSettings;
+            ComManagerObj.CommunicationSettingsFile = StaticKeys.Communication_Settings_File;
+            ComManagerObj.MessageConfigFile = StaticKeys.Messages_Config_File;
+            ComManagerObj.ApplyUpdateOfCommunicationSettings += ApplyUpdatedCommunicationSettings;
         }
-
-        private static CommunicationManager GetCommunicationManager()
+        private CommunicationManager ComManagerObj
         {
-            return _sComManager.Value;
+            get { return CommunicationManager.GetCommunicationManager(); }
         }
 
         private void ECUSimMain_Load(object sender, EventArgs e)
         {
+            DisplayUserRights();
             LoadTraceViewTab();            
             LoadRequestResponseTab();
+            ApplyUpdatedCommunicationSettings();
             LoadCommunicationSettingsTab();
+        }
+
+        /// <summary>
+        /// displays the current user name and if the user is an administrator.
+        /// </summary>
+        private void DisplayUserRights()
+        {
+            WindowsIdentity userWinIdentity = WindowsIdentity.GetCurrent();
+            var userWinPrincipal = new WindowsPrincipal(userWinIdentity);
+
+            UserInfo.Text = Environment.UserName;
+            if (userWinPrincipal.IsInRole(WindowsBuiltInRole.Administrator))
+            {
+                UserInfo.Text += @" ADMIN";
+            }
         }
 
         private void LoadCommunicationSettingsTab()
         {
-            var communicationSettingsUserControl = new WpfHostUserControl("WPFComSettingsViewLib", GetCommunicationManager());
+            var communicationSettingsUserControl = new WpfHostUserControl("WPFComSettingsViewLib", ComManagerObj);
             tcMain.TabPages[2].Controls.Add(communicationSettingsUserControl);
             communicationSettingsUserControl.Dock = DockStyle.Fill;
         }
 
         private void LoadTraceViewTab()
         {
-            var traceViewUserControl = new WpfHostUserControl("WPFTraceViewLib", GetCommunicationManager());
+            var traceViewUserControl = new WpfHostUserControl("WPFTraceViewLib", ComManagerObj);
             tcMain.TabPages[0].Controls.Add(traceViewUserControl);
             traceViewUserControl.Dock = DockStyle.Fill;
         }
@@ -135,37 +149,22 @@ namespace ECUSim
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void InitCANDriver_Click(object sender, EventArgs e)
+        private async void InitCANDriver_Click(object sender, EventArgs e)
         {
-            //CommunicationSettings comSettings = new CommunicationSettings
-            //{
-            //    ACTIVE_CAN_HW = CAN_HW_INTERFACE.e_VECTOR_XL,
-            //    ACTIVE_CAN_ENV = CAN_ENV.e_CAN,
-            //    ACTIVE_COM_BAUDRATE = 500000
-            //};
-
-            CommunicationSettings comSettings = new CommunicationSettings
+            //try to load the Settings from comSettings.json file in public Documents folder.
+            //if file exists, deserialize it and load it
+            if (File.Exists(ComManagerObj.CommunicationSettingsFile))
             {
-                ACTIVE_CAN_HW = CAN_HW_INTERFACE.e_VECTOR_XL,
-                ACTIVE_CAN_ENV = CAN_ENV.e_CANFD,
-                ACTIVE_DATA_FRAME = CAN_DATA_FRAME_TYPE.e_FRAME_STD,
-                ACTIVE_CANFD_SETTINGS = new CANFD_SETTINGS
-                {
-                    arb_baudrate = 500000,
-                    arb_tseg1 = 7,
-                    arb_tseg2 = 2,
-                    arb_sjw = 2,
-                    data_baudrate = 2000000,
-                    data_tseg1 = 7,
-                    data_tseg2 = 2,
-                    data_sjw = 2
-                }
-            };
-            var initCANStatus = GetCommunicationManager().InitializeCommunicationDriver(comSettings);
+                ComManagerObj.ComSettings.Dispose();
+                ComManagerObj.ComSettings = null;
+                ComManagerObj.ComSettings = (CommunicationSettings)await JsonSerializationHelper.Deserialize<CommunicationSettings>(ComManagerObj.CommunicationSettingsFile);
+            }
+
+            var initCANStatus = ComManagerObj.InitializeCommunicationDriver();
             InitCANDriver.BackColor = initCANStatus ? System.Drawing.Color.LightGreen : System.Drawing.Color.Red;
             if (!initCANStatus)
             {
-                MessageBox.Show($"Error initializing CAN driver: {GetCommunicationManager().LastErrorMessage}", "Initialization Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Error initializing CAN driver: {ComManagerObj.LastErrorMessage}", "Initialization Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }

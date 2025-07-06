@@ -27,12 +27,23 @@ namespace HardwareDriverLayer.Wrapper
         private ulong _accessMask;
         private ulong _permissionMask;
 
-        public VectorXL()
+        private static readonly Lazy<VectorXL> _sVectorXL = new Lazy<VectorXL>(() => new VectorXL());
+
+        private VectorXL()
         {
             _active_CAN_Env = CAN_ENV.e_CAN; // Default to CAN environment
             _com_Baudrate = 500000; // Default CAN baudrate
             _active_Data_Frame = CAN_DATA_FRAME_TYPE.e_FRAME_STD; // Default to Standard CAN frame type
             _canfd_settings = null; // Default CAN FD settings are null
+        }
+
+        /// <summary>
+        /// returns the singleton instance of the VectorXL wrapper.
+        /// </summary>
+        /// <returns></returns>
+        public static VectorXL GetVectorXLWrapper()
+        {
+            return _sVectorXL.Value;
         }
 
         /// <summary>
@@ -191,12 +202,13 @@ namespace HardwareDriverLayer.Wrapper
         {
             if (_active_CAN_Env == CAN_ENV.e_CANFD)
             {
-                return InitializeVectorXLCANFD();
+                _isDriverInitialized = InitializeVectorXLCANFD();
             }
             else
             {
-                return InitializeVectorXLCAN();
+                _isDriverInitialized = InitializeVectorXLCAN();
             }
+            return _isDriverInitialized;
         }
 
         /// <summary>

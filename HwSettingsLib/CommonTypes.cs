@@ -19,7 +19,7 @@
     }
 
 
-    public class CANFD_SETTINGS
+    public class CANFD_SETTINGS : IDisposable
     {
         public UInt32 arb_baudrate;
         public UInt32 arb_tseg1;
@@ -30,5 +30,28 @@
         public UInt32 data_tseg1;
         public UInt32 data_tseg2;
         public UInt32 data_sjw;
+
+
+        ~CANFD_SETTINGS()
+        {
+            Dispose(false);
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+        protected void Dispose(bool disposing)
+        {
+            if (m_isDisposed)
+                return;
+
+            if (disposing)
+            {
+            }
+            m_isDisposed = true;
+        }
+        private bool m_isDisposed = false;
     }
 }

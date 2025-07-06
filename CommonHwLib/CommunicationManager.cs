@@ -10,6 +10,45 @@ namespace CommonHwLib
     {
         public string MessageConfigFile { get; set; } = string.Empty;
         public string CommunicationSettingsFile { get; set; } = string.Empty;
+        public CommunicationSettings ComSettings { get; set; }
+
+        private static readonly Lazy<CommunicationManager> _sComManager = new Lazy<CommunicationManager>(() => new CommunicationManager());
+
+        private IHwWrapperFactory _hwWrapperFactory;
+        private CAN_HW_INTERFACE _lastActiveCANHw = CAN_HW_INTERFACE.e_NOT_DEFINED;
+
+        private bool _hwInitState = false;
+
+        private CommunicationManager() 
+        {
+            //canfd settings are set by default
+            ComSettings = new CommunicationSettings
+            {
+                ACTIVE_CAN_HW = CAN_HW_INTERFACE.e_VECTOR_XL,
+                ACTIVE_CAN_ENV = CAN_ENV.e_CANFD,
+                ACTIVE_DATA_FRAME = CAN_DATA_FRAME_TYPE.e_FRAME_STD,
+                ACTIVE_CANFD_SETTINGS = new CANFD_SETTINGS
+                {
+                    arb_baudrate = 500000,
+                    arb_tseg1 = 7,
+                    arb_tseg2 = 2,
+                    arb_sjw = 2,
+                    data_baudrate = 2000000,
+                    data_tseg1 = 7,
+                    data_tseg2 = 2,
+                    data_sjw = 2
+                }
+            };
+        }
+
+        /// <summary>
+        /// returns the singleton instance of the CommunicationManager.
+        /// </summary>
+        /// <returns></returns>
+        public static CommunicationManager GetCommunicationManager()
+        {
+            return _sComManager.Value;
+        }
 
         public Action ApplyUpdateOfCommunicationSettings { get; set; }
 
@@ -38,55 +77,71 @@ namespace CommonHwLib
         /// </summary>
         /// <remarks>This method validates the provided communication settings and attempts to initialize
         /// the driver using the specified hardware interface and configuration. If the initialization fails, the last
-        /// error message can be retrieved from the <c>LastErrorMessage</c> property.</remarks>
-        /// <param name="comSettings">The communication settings to use for driver initialization. This parameter must contain valid configuration
-        /// values, including the active CAN hardware interface, baud rate, and other related settings.</param>
+        /// error message can be retrieved from the <c>LastErrorMessage</c> property.</remarks>        
         /// <returns><see langword="true"/> if the communication driver is successfully initialized; otherwise, <see
         /// langword="false"/>.</returns>
-        public bool InitializeCommunicationDriver(CommunicationSettings comSettings)
+        public bool InitializeCommunicationDriver()
         {               
-            if (ValidateSettings(comSettings))
+            if (ValidateSettings() && IsSettingsChanged())
             {
-                IHwWrapperFactory factory;
-
-                switch (comSettings.ACTIVE_CAN_HW)
+                //create the new factory object only if the new CAN HW is different than the last active CAN HW
+                if (ComSettings.ACTIVE_CAN_HW != _lastActiveCANHw)
                 {
-                    case CAN_HW_INTERFACE.e_VECTOR_XL:
-                        factory = LoadFactory("HardwareDriverLayer.WrapperFactory.VectorXLWrapperFactory");
-                        break;
+                    _lastActiveCANHw = ComSettings.ACTIVE_CAN_HW;
 
-                    case CAN_HW_INTERFACE.e_NOT_DEFINED:
-                        factory = null;
-                        break;
+                    switch (ComSettings.ACTIVE_CAN_HW)
+                    {
+                        case CAN_HW_INTERFACE.e_VECTOR_XL:
+                            _hwWrapperFactory = LoadFactory("HardwareDriverLayer.WrapperFactory.VectorXLWrapperFactory");
+                            break;
 
-                    default:
-                        factory = null;
-                        break;
-                }
+                        case CAN_HW_INTERFACE.e_NOT_DEFINED:
+                            _hwWrapperFactory = null;
+                            break;
 
-                if (null != factory)
+                        default:
+                            _hwWrapperFactory = null;
+                            break;
+                    }
+                }                
+
+                if (null != _hwWrapperFactory)
                 {
-                    HwWrapperBase hwWrapper = factory.GetHwWrapper();
-                    hwWrapper.SetCANEnvironment(comSettings.ACTIVE_CAN_ENV);
-                    hwWrapper.SetCommunicationBaudrate(comSettings.ACTIVE_COM_BAUDRATE);
-                    hwWrapper.SetCANFDSettings(comSettings.ACTIVE_CANFD_SETTINGS);
-                    hwWrapper.SetCANDataFrameType(comSettings.ACTIVE_DATA_FRAME);
-                    var initState = hwWrapper.InitializeDriver();
-                    if(!initState) LastErrorMessage = hwWrapper.GetLastErrorMessage();
-                    return initState;
+                    HwWrapperBase hwWrapper = _hwWrapperFactory.GetHwWrapper();
+                    hwWrapper.SetCANEnvironment(ComSettings.ACTIVE_CAN_ENV);
+                    hwWrapper.SetCommunicationBaudrate(ComSettings.ACTIVE_COM_BAUDRATE);
+                    hwWrapper.SetCANFDSettings(ComSettings.ACTIVE_CANFD_SETTINGS);
+                    hwWrapper.SetCANDataFrameType(ComSettings.ACTIVE_DATA_FRAME);
+                    _hwInitState = hwWrapper.InitializeDriver();
+                    if(!_hwInitState) LastErrorMessage = hwWrapper.GetLastErrorMessage();
+                    return _hwInitState;
                 }
+            }
+            return _hwInitState;
+        }
+
+        /// <summary>
+        /// todo: first check each values are valid, if not, return false       
+        /// </summary>
+        /// <returns></returns>
+        private bool ValidateSettings()
+        {
+            if (ComSettings != null)
+            {
+                //check each value if in range
+                return true;
             }
             return false;
         }
 
+
         /// <summary>
         /// todo: first check if there is any change in settings, if not, return true       
         /// </summary>
-        /// <param name="comSettings"></param>
         /// <returns></returns>
-        private bool ValidateSettings(CommunicationSettings comSettings)
+        private bool IsSettingsChanged()
         {
-            if (comSettings != null)
+            if (ComSettings != null)
             {
                 //check each setting if there is any change
                 return true;

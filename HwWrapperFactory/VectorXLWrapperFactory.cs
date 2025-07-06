@@ -10,7 +10,7 @@ namespace HardwareDriverLayer.WrapperFactory
         }
         public HwWrapperBase GetHwWrapper()
         {
-            return new VectorXL();
+            return VectorXL.GetVectorXLWrapper();
         }
     }
 }
