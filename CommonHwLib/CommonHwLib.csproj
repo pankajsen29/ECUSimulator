@@ -19,6 +19,7 @@
     <ProjectReference Include="..\HwSettingsLib\HwSettingsLib.csproj" />
     <ProjectReference Include="..\HwWrapperFactory\HwWrapperFactory.csproj" />
     <ProjectReference Include="..\HwWrapperInterface\HwWrapperInterface.csproj" />
+    <ProjectReference Include="..\UtilityLib\UtilityLib.csproj" />
   </ItemGroup>
 
 </Project>

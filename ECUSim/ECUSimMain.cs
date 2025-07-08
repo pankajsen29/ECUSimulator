@@ -138,13 +138,13 @@ namespace ECUSim
         /// if exists: 
         ///     deserialize it and load it
         ///     and initialize active comSettings object with the loaded settings
-        ///     and then call GetCommunicationManager().InitializeCommunicationDriver(comSettings);
+        ///     and then call GetCommunicationManager().InitializeCommunicationDriver();
         /// 
         /// if doesn't exist:
         ///     show Yes/No Messagebox to ask the user if the driver needs to be initialized with default settings
         ///         if Yes:
         ///             then do the below to initialize active comSettings object with default values
-        ///             and then call GetCommunicationManager().InitializeCommunicationDriver(comSettings);
+        ///             and then call GetCommunicationManager().InitializeCommunicationDriver();
         ///         else abort initialization
         /// </summary>
         /// <param name="sender"></param>
@@ -165,6 +165,10 @@ namespace ECUSim
             if (!initCANStatus)
             {
                 MessageBox.Show($"Error initializing CAN driver: {ComManagerObj.LastErrorMessage}", "Initialization Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            else if (!string.IsNullOrWhiteSpace(ComManagerObj.LastErrorMessage))
+            {
+                MessageBox.Show(ComManagerObj.LastErrorMessage, "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
     }

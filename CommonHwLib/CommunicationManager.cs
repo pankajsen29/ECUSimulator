@@ -1,8 +1,10 @@
-﻿using System;
-using System.Reflection;
-using HardwareDriverLayer.HwSettings;
+﻿using HardwareDriverLayer.HwSettings;
 using HardwareDriverLayer.WrapperFactory;
 using HardwareDriverLayer.WrapperInterface;
+using System;
+using System.Reflection;
+using System.Threading.Tasks;
+using UtilityLib;
 
 namespace CommonHwLib
 {
@@ -16,6 +18,7 @@ namespace CommonHwLib
 
         private IHwWrapperFactory _hwWrapperFactory;
         private CAN_HW_INTERFACE _lastActiveCANHw = CAN_HW_INTERFACE.e_NOT_DEFINED;
+        private string _lastActiveComSettingsJSON = string.Empty;
 
         private bool _hwInitState = false;
 
@@ -81,7 +84,8 @@ namespace CommonHwLib
         /// <returns><see langword="true"/> if the communication driver is successfully initialized; otherwise, <see
         /// langword="false"/>.</returns>
         public bool InitializeCommunicationDriver()
-        {               
+        {
+            LastErrorMessage = string.Empty;
             if (ValidateSettings() && IsSettingsChanged())
             {
                 //create the new factory object only if the new CAN HW is different than the last active CAN HW
@@ -113,7 +117,15 @@ namespace CommonHwLib
                     hwWrapper.SetCANFDSettings(ComSettings.ACTIVE_CANFD_SETTINGS);
                     hwWrapper.SetCANDataFrameType(ComSettings.ACTIVE_DATA_FRAME);
                     _hwInitState = hwWrapper.InitializeDriver();
-                    if(!_hwInitState) LastErrorMessage = hwWrapper.GetLastErrorMessage();
+                    if (_hwInitState)
+                    {
+                        //from a non-async method, calling the async method on a separate thread and wait for the result
+                        _lastActiveComSettingsJSON = Task.Run(async () => (string)await JsonSerializationHelper.SerializeObject<CommunicationSettings>(ComSettings, true)).Result;
+                    }
+                    else
+                    {
+                        LastErrorMessage += hwWrapper.GetLastErrorMessage();
+                    }
                     return _hwInitState;
                 }
             }
@@ -121,33 +133,58 @@ namespace CommonHwLib
         }
 
         /// <summary>
-        /// todo: first check each values are valid, if not, return false       
+        /// few settings are validated before initializing the driver.      
         /// </summary>
         /// <returns></returns>
         private bool ValidateSettings()
         {
             if (ComSettings != null)
             {
-                //check each value if in range
+                //validate: sjw must be less than or equal to tseg2                
+                if (ComSettings.ACTIVE_CANFD_SETTINGS.arb_sjw > ComSettings.ACTIVE_CANFD_SETTINGS.arb_tseg2)
+                {
+                    ComSettings.ACTIVE_CANFD_SETTINGS.arb_sjw = ComSettings.ACTIVE_CANFD_SETTINGS.arb_tseg2;
+                    LastErrorMessage += "CANFD settings warning: arb_sjw must be less than or equal to arb_tseg2. Hence arb_sjw is reset to the value of arb_tseg2. ";
+                    return true;
+                }
+                if (ComSettings.ACTIVE_CANFD_SETTINGS.data_sjw > ComSettings.ACTIVE_CANFD_SETTINGS.data_tseg2)
+                {
+                    ComSettings.ACTIVE_CANFD_SETTINGS.data_sjw = ComSettings.ACTIVE_CANFD_SETTINGS.data_tseg2;
+                    LastErrorMessage += "CANFD settings warning: data_sjw must be less than or equal to data_tseg2. Hence data_sjw is reset to the value of data_tseg2. ";
+                    return true;
+                }
                 return true;
             }
-            return false;
+            else
+            {
+                return false;
+            }
         }
 
 
         /// <summary>
-        /// todo: first check if there is any change in settings, if not, return true       
+        /// check if there is any change in settings by comparing the old and new json string of the ComSettings object.      
         /// </summary>
         /// <returns></returns>
         private bool IsSettingsChanged()
         {
             if (ComSettings != null)
             {
-                //check each setting if there is any change
-                return true;
+                //driver initialization for the firt time
+                if(string.IsNullOrWhiteSpace(_lastActiveComSettingsJSON))
+                {
+                    return true;
+                }
+                //from a non-async method, calling the async method on a separate thread and wait for the result
+                var newComSettingsJSON = Task.Run(async () => (string)await JsonSerializationHelper.SerializeObject<CommunicationSettings>(ComSettings, true)).Result;
+                if (!string.Equals(_lastActiveComSettingsJSON, newComSettingsJSON, StringComparison.OrdinalIgnoreCase))
+                {
+                    return true;
+                }
             }
             return false;
         }
+
 
         /// <summary>
         /// Loads an instance of a hardware wrapper factory based on the specified class name.
