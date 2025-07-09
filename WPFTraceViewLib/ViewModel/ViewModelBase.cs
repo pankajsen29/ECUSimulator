@@ -1,4 +1,6 @@
-﻿namespace WPFTraceViewLib.ViewModel
+﻿using WPFTraceViewLib.Model;
+
+namespace WPFTraceViewLib.ViewModel
 {
     /// <summary>
     /// base class for ViewModels, inheriting from NotifyPropertyChangedBase and implementing IDisposable.

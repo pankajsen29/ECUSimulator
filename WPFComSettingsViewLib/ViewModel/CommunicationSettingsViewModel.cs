@@ -1,9 +1,9 @@
-﻿using CommonHwLib;
-using HardwareDriverLayer.HwSettings;
-using System.Collections.ObjectModel;
-using System.IO;
+﻿using System.IO;
 using System.Windows.Input;
+using System.Collections.ObjectModel;
+using CommonHwLib;
 using UtilityLib;
+using HardwareDriverLayer.HwSettings;
 using WPFComSettingsViewLib.Command;
 using PropertyDescriptor = WPFComSettingsViewLib.Model.PropertyDescriptor;
 

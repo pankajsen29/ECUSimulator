@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace WPFTraceViewLib.ViewModel
+namespace WPFTraceViewLib.Model
 {
     public abstract class NotifyPropertyChangedBase : INotifyPropertyChanged
     {

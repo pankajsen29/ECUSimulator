@@ -20,11 +20,8 @@
 	</PropertyGroup>
 	
   <ItemGroup>
+    <ProjectReference Include="..\CommonHwLib\CommonHwLib.csproj" />
     <ProjectReference Include="..\WPFLibBase\WPFLibBase.csproj" />
-  </ItemGroup>
-	
-  <ItemGroup>
-    <Folder Include="Model\" />
   </ItemGroup>
 
 </Project>

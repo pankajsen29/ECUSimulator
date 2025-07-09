@@ -1,5 +1,6 @@
 ﻿using CommonHwLib;
 using WPFLibBase;
+using WPFTraceViewLib.ViewModel;
 
 namespace WPFTraceViewLib.View
 {
@@ -8,14 +9,16 @@ namespace WPFTraceViewLib.View
     /// </summary>
     public partial class CANTraceView : WpfUserControl
     {
+        private CANTraceViewModel _CANTraceVM;
         public CANTraceView()
         {
             InitializeComponent();
+            this.DataContext = _CANTraceVM = new CANTraceViewModel();
         }
 
         public override bool OnStart(CommunicationManager comManager)
         {
-            //get the initialization
+            _CANTraceVM.OnStart(comManager);
             return true;
         }
 

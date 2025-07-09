@@ -7,7 +7,53 @@
              mc:Ignorable="d" 
              xmlns:src ="clr-namespace:WPFLibBase;assembly=WPFLibBase" 
              d:DesignHeight="450" d:DesignWidth="800">
+
     <Grid>
-        <Button Height="100" Width="250" Content="dummy - trace"></Button>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="0.2*" />
+                <ColumnDefinition Width="0.2*" />
+                <ColumnDefinition Width="0.2*" />
+                <ColumnDefinition Width="0.2*" />
+                <ColumnDefinition Width="0.2*" />
+            </Grid.ColumnDefinitions>
+
+                <CheckBox Grid.Column="3"              
+                Content="Overwrite"                
+                IsChecked="{Binding IsOverwriteEnabled,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+
+                <Button Grid.Column="4" 
+                Content="Clear"
+                Command="{Binding ClearTraceCommand}"/>
+        </Grid>
+
+        <DataGrid Grid.Row="1" 
+                HeadersVisibility="Column" 
+                HorizontalAlignment="Stretch" 
+                ItemsSource="{Binding CANMessageCollection}"                  
+                SelectionUnit="FullRow" 
+                SelectionMode="Extended" 
+                AutoGenerateColumns="False" 
+                EnableRowVirtualization="false" 
+                EnableColumnVirtualization="false" 
+                CanUserAddRows="False" 
+                CanUserSortColumns="False"
+                CanUserReorderColumns="False"                             
+                ScrollViewer.VerticalScrollBarVisibility="Auto"
+                ScrollViewer.CanContentScroll="False"
+                ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
+                HorizontalGridLinesBrush="LightBlue" 
+                VerticalGridLinesBrush="LightBlue">
+            <DataGrid.Columns>
+                <DataGridTextColumn Width="0.2*" Header="Timestamp" Binding="{Binding Timestamp}" IsReadOnly="True"/>
+                <DataGridTextColumn Width="0.15*" Header="ID" Binding="{Binding ID}" IsReadOnly="True"/>
+                <DataGridTextColumn Width="0.1*" Header="DLC" Binding="{Binding DLC}" IsReadOnly="True"/>
+                <DataGridTextColumn Width="0.55*" Header="Data" Binding="{Binding Data}" IsReadOnly="True"/>
+            </DataGrid.Columns>
+        </DataGrid>
     </Grid>
 </src:WpfUserControl>
