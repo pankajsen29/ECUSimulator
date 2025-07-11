@@ -39,6 +39,8 @@ namespace ECUSim
             txtMessage = new System.Windows.Forms.TextBox();
             txtMessagesConfig = new System.Windows.Forms.TextBox();
             btnAddMessage = new System.Windows.Forms.Button();
+            btnLoadMsgConfig = new System.Windows.Forms.Button();
+            txtMessageConfigFilePath = new System.Windows.Forms.TextBox();
             tabCommunicationSettings = new System.Windows.Forms.TabPage();
             InitCANDriver = new System.Windows.Forms.Button();
             StatusInfo.SuspendLayout();
@@ -127,12 +129,15 @@ namespace ECUSim
             // 
             tableLayoutPanel1.AutoSize = true;
             tableLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            tableLayoutPanel1.ColumnCount = 2;
+            tableLayoutPanel1.ColumnCount = 3;
+            tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 45F));
             tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 5F));
             tableLayoutPanel1.Controls.Add(txtMessage, 0, 1);
             tableLayoutPanel1.Controls.Add(txtMessagesConfig, 1, 1);
             tableLayoutPanel1.Controls.Add(btnAddMessage, 0, 0);
+            tableLayoutPanel1.Controls.Add(btnLoadMsgConfig, 2, 0);
+            tableLayoutPanel1.Controls.Add(txtMessageConfigFilePath, 1, 0);
             tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             tableLayoutPanel1.Location = new System.Drawing.Point(2, 2);
             tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(2);
@@ -152,34 +157,56 @@ namespace ECUSim
             txtMessage.Multiline = true;
             txtMessage.Name = "txtMessage";
             txtMessage.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            txtMessage.Size = new System.Drawing.Size(558, 450);
+            txtMessage.Size = new System.Drawing.Size(502, 450);
             txtMessage.TabIndex = 0;
             txtMessage.WordWrap = false;
             // 
             // txtMessagesConfig
             // 
+            tableLayoutPanel1.SetColumnSpan(txtMessagesConfig, 2);
             txtMessagesConfig.Dock = System.Windows.Forms.DockStyle.Fill;
-            txtMessagesConfig.Location = new System.Drawing.Point(564, 36);
+            txtMessagesConfig.Location = new System.Drawing.Point(508, 36);
             txtMessagesConfig.Margin = new System.Windows.Forms.Padding(2);
             txtMessagesConfig.Multiline = true;
             txtMessagesConfig.Name = "txtMessagesConfig";
             txtMessagesConfig.ReadOnly = true;
             txtMessagesConfig.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            txtMessagesConfig.Size = new System.Drawing.Size(559, 450);
+            txtMessagesConfig.Size = new System.Drawing.Size(615, 450);
             txtMessagesConfig.TabIndex = 1;
             txtMessagesConfig.WordWrap = false;
             // 
             // btnAddMessage
             // 
-            btnAddMessage.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom;
-            btnAddMessage.Location = new System.Drawing.Point(105, 2);
+            btnAddMessage.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
+            btnAddMessage.Location = new System.Drawing.Point(328, 2);
             btnAddMessage.Margin = new System.Windows.Forms.Padding(2);
             btnAddMessage.Name = "btnAddMessage";
-            btnAddMessage.Size = new System.Drawing.Size(351, 30);
+            btnAddMessage.Size = new System.Drawing.Size(176, 30);
             btnAddMessage.TabIndex = 2;
-            btnAddMessage.Text = "Define and Add the below message >>";
+            btnAddMessage.Text = "Add the below message >>";
             btnAddMessage.UseVisualStyleBackColor = true;
             btnAddMessage.Click += btnAddMessage_Click;
+            // 
+            // btnLoadMsgConfig
+            // 
+            btnLoadMsgConfig.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            btnLoadMsgConfig.Location = new System.Drawing.Point(1070, 2);
+            btnLoadMsgConfig.Margin = new System.Windows.Forms.Padding(2);
+            btnLoadMsgConfig.Name = "btnLoadMsgConfig";
+            btnLoadMsgConfig.Size = new System.Drawing.Size(53, 30);
+            btnLoadMsgConfig.TabIndex = 3;
+            btnLoadMsgConfig.Text = "Load";
+            btnLoadMsgConfig.UseVisualStyleBackColor = true;
+            btnLoadMsgConfig.Click += btnLoadMsgConfig_Click;
+            // 
+            // txtMessageConfigFilePath
+            // 
+            txtMessageConfigFilePath.Anchor = System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            txtMessageConfigFilePath.Location = new System.Drawing.Point(508, 5);
+            txtMessageConfigFilePath.Margin = new System.Windows.Forms.Padding(2);
+            txtMessageConfigFilePath.Name = "txtMessageConfigFilePath";
+            txtMessageConfigFilePath.Size = new System.Drawing.Size(558, 23);
+            txtMessageConfigFilePath.TabIndex = 4;
             // 
             // tabCommunicationSettings
             // 
@@ -241,6 +268,8 @@ namespace ECUSim
         private System.Windows.Forms.TextBox txtMessagesConfig;
         private System.Windows.Forms.Button btnAddMessage;
         private System.Windows.Forms.Button InitCANDriver;
+        private System.Windows.Forms.Button btnLoadMsgConfig;
+        private System.Windows.Forms.TextBox txtMessageConfigFilePath;
     }
 }
 

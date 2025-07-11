@@ -16,4 +16,8 @@
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
 		<OutputPath>..\Output\</OutputPath>
 	</PropertyGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\UtilityLib\UtilityLib.csproj" />
+	</ItemGroup>
 </Project>

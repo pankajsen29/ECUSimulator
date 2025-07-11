@@ -7,18 +7,22 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using UtilityLib;
 using WPFHostLib;
-using Message = MessageDesignerLib.Message;
 
 namespace ECUSim
 {
     public partial class ECUSimMain : Form
     {
+        private MessageConfigManager _msgConfigManager;
+        private MessageManager _msgManager;
         public ECUSimMain()
         {
             InitializeComponent();
             ComManagerObj.CommunicationSettingsFile = StaticKeys.Communication_Settings_File;
             ComManagerObj.MessageConfigFile = StaticKeys.Messages_Config_File;
             ComManagerObj.ApplyUpdateOfCommunicationSettings += ApplyUpdatedCommunicationSettings;
+
+            _msgConfigManager = new MessageConfigManager();
+            _msgManager = new MessageManager();
         }
         private CommunicationManager ComManagerObj
         {
@@ -28,7 +32,7 @@ namespace ECUSim
         private void ECUSimMain_Load(object sender, EventArgs e)
         {
             DisplayUserRights();
-            LoadTraceViewTab();            
+            LoadTraceViewTab();
             LoadRequestResponseTab();
             ApplyUpdatedCommunicationSettings();
             LoadCommunicationSettingsTab();
@@ -65,67 +69,9 @@ namespace ECUSim
 
         private async void LoadRequestResponseTab()
         {
-            await LoadMessageDefinition();
-            await LoadMessagesConfig();
-        }
-        private async Task LoadMessageDefinition()
-        {
-            //request json
-            var pattern = new Pattern();
-            pattern.Index = "";
-            pattern.RangeStart = "";
-            pattern.RangeEnd = "";
-
-            var dataPatterns = new DataPatterns();
-            dataPatterns.Pattern = new Pattern[] { pattern };
-
-            var reqhexdata = new RequestHexData();
-            reqhexdata.IsPatternBased = "false";
-            reqhexdata.DataString = "41 81 C0 11 00 00 00 00";
-            reqhexdata.DataPatterns = dataPatterns;
-
-            var request = new Request();
-            request.Id = "0x31";
-            request.Payload = "8";
-            request.IsCanFdFrame = "false";
-            request.RequestHexData = reqhexdata;
-
-
-            //response json string
-            var substitution = new Substitution();
-            substitution.SourceDataIndexFromRequest = "";
-            substitution.DestinationDataIndexToResponse = "";
-
-            var dataSubstitution = new DataSubstitutions();
-            dataSubstitution.Substitution = new Substitution[] { substitution };
-
-            var reshexdata = new ResponseHexData();
-            reshexdata.IsPatternBased = "false";
-            reshexdata.DataString = "41 81 C0 11 00 00 00 00";
-            reshexdata.DataSubstitutions = dataSubstitution;
-
-            var response = new Response();
-            response.Id = "0x30";
-            response.Payload = "8";
-            response.IsCanFdFrame = "false";
-            response.ResponseHexData = reshexdata;
-
-            //message json string
-            var message = new Message();
-            message.Name = "cmd_1";
-            message.Request = request;
-            message.Response = response;
-
-            txtMessage.Text = (string)(await JsonSerializationHelper.SerializeObject<Message>(message, true));
-        }
-
-        private async Task LoadMessagesConfig()
-        {
-
-        }
-        private void btnAddMessage_Click(object sender, EventArgs e)
-        {
-
+            txtMessage.Text = await _msgConfigManager.LoadMessageDefinition();
+            txtMessageConfigFilePath.Text = ComManagerObj.MessageConfigFile;
+            await LoadMsgConfig();
         }
 
         private void ApplyUpdatedCommunicationSettings()
@@ -171,5 +117,59 @@ namespace ECUSim
                 MessageBox.Show(ComManagerObj.LastErrorMessage, "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
+
+        /// <summary>
+        /// Call from "async" method to another "async" method (with/without return value) 
+        /// => just call using "await", it will not block the UI thread and wait for the result
+        /// 
+        /// Call from "non-async" method to an "async" method (without return value) 
+        /// => just call AnAsyncMethod() without using "async", it will not block the UI thread and wait for the result  
+        /// 
+        /// Call from "non-async" method to an "async" method (with return value) should be done on a separate thread using Task.Run() to avoid blocking the UI thread.
+        /// => var returnValue = Task.Run(async () => await AnAsyncMethod()).Result;
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private async void btnAddMessage_Click(object sender, EventArgs e)
+        {
+            //var isMsgConfigLoaded = Task.Run(async () => await LoadMsgConfig()).Result;
+            var isMsgConfigLoaded = await LoadMsgConfig();
+            if (isMsgConfigLoaded)
+            {
+                await _msgConfigManager.AddToMessagesConfig(txtMessage.Text, ComManagerObj.MessageConfigFile);
+                await LoadMsgConfig(); //load the updated message config file
+            }
+        }
+
+        private void btnLoadMsgConfig_Click(object sender, EventArgs e)
+        {
+            var isMsgConfigLoaded = Task.Run(async () => await LoadMsgConfig()).Result;
+        }
+
+        private async Task<bool> LoadMsgConfig()
+        {
+            var message = string.Empty;
+            var messageConfigFilePath = txtMessageConfigFilePath.Text;
+            if (PathValidator.IsValidFilePath(messageConfigFilePath, ".json", ref message))
+            {
+                ComManagerObj.MessageConfigFile = messageConfigFilePath;
+                if (File.Exists(messageConfigFilePath))
+                {
+                    txtMessageConfigFilePath.BackColor = System.Drawing.Color.LightGreen;
+                    txtMessagesConfig.Text = await _msgConfigManager.LoadMessageConfig(ComManagerObj.MessageConfigFile);
+                }
+                else
+                {
+                    txtMessageConfigFilePath.BackColor = System.Drawing.Color.Red;
+                }
+                return true;
+            }
+            else
+            {
+                txtMessageConfigFilePath.BackColor = System.Drawing.Color.Red;
+                MessageBox.Show(message, "Invalid Message Config File Path!, Enter full path of a json to be created/modified.", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+        }       
     }
 }

@@ -11,7 +11,7 @@ namespace UtilityLib
         }
 
         /// <summary>
-        /// 
+        /// serializes an object (any class type object) to a JSON file.
         /// </summary>
         /// <param name="file"></param>
         /// <param name="content"></param>
@@ -43,7 +43,7 @@ namespace UtilityLib
         }
 
         /// <summary>
-        /// 
+        /// deserializes a JSON file to an object of type T.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="file"></param>
@@ -71,7 +71,7 @@ namespace UtilityLib
         }
 
         /// <summary>
-        /// 
+        /// serializes an object of type T to a JSON string.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="obj"></param>
@@ -96,7 +96,7 @@ namespace UtilityLib
         }
 
         /// <summary>
-        /// 
+        /// deserializes a JSON string to an object of type T.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="jsonString"></param>

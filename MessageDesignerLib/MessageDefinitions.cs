@@ -5,63 +5,52 @@ namespace MessageDesignerLib
 {
     // Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(myJsonResponse);
 
-    public class Root
+    internal class Root
     {
-        public Messages Messages { get; set; }
+        public List<Message> Messages { get; set; }
     }
-    public class Messages
-    {
-        public Message Message { get; set; }
-    }
-    public class Message
+
+    internal class Message
     {
         public string Name { get; set; }
         public Request Request { get; set; }
         public Response Response { get; set; }
     }
-    public class Request
+    internal class Request
     {
         public string Id { get; set; }
-        public string Payload { get; set; }
-        public string IsCanFdFrame { get; set; }
+        public int Payload { get; set; }
+        public bool IsCanFdFrame { get; set; }
         public RequestHexData RequestHexData { get; set; }
     }
-    public class RequestHexData
+    internal class RequestHexData
     {
-        public string IsPatternBased { get; set; }
+        public bool IsRuleBased { get; set; }
         public string DataString { get; set; }
-        public DataPatterns DataPatterns { get; set; }
+        public List<Pattern> DataPatterns { get; set; }
     }
-    public class Response
+    internal class Pattern
+    {
+        public int Index { get; set; }
+        public byte RangeStart { get; set; }
+        public byte RangeEnd { get; set; }
+    }
+    internal class Response
     {
         public string Id { get; set; }
-        public string Payload { get; set; }
-        public string IsCanFdFrame { get; set; }
+        public int Payload { get; set; }
+        public bool IsCanFdFrame { get; set; }
         public ResponseHexData ResponseHexData { get; set; }
     }
-    public class ResponseHexData
+    internal class ResponseHexData
     {
-        public string IsPatternBased { get; set; }
+        public bool IsRuleBased { get; set; }
         public string DataString { get; set; }
-        public DataSubstitutions DataSubstitutions { get; set; }
+        public List<Substitution> DataSubstitutions { get; set; }
     }
-    public class DataPatterns
+    internal class Substitution
     {
-        public Pattern[] Pattern { get; set; }
-    }
-    public class Pattern
-    {
-        public string Index { get; set; }
-        public string RangeStart { get; set; }
-        public string RangeEnd { get; set; }
-    }
-    public class DataSubstitutions
-    {
-        public Substitution[] Substitution { get; set; }
-    }
-    public class Substitution
-    {
-        public string SourceDataIndexFromRequest { get; set; }
-        public string DestinationDataIndexToResponse { get; set; }
+        public int SourceDataIndexFromRequest { get; set; }
+        public int DestinationDataIndexToResponse { get; set; }
     }
 }
