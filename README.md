@@ -164,12 +164,20 @@ using System.Windows.Forms.Integration; // For ElementHost
  - todo: add screenshot of the test steps
  - todo: add screenshot of the trace window showing CAN messages
 
+  **"Request/Response Setup" tab:**
+  <img width="1143" height="635" alt="request-response setup tab" src="https://github.com/user-attachments/assets/d3419b4d-c012-451c-98ef-54bfe27b0c1a" />
+
+  
+  **"Communication Setup" tab:**
+  
   CAN Initialization of Vector Virtual CAN Interface:
   ![CAN_init](https://github.com/user-attachments/assets/8fe2d7d3-399f-43d4-8590-a9ad79b14449)
 
   CANFD Initialization of Vector Virtual CAN Interface:
   ![CANFD_init](https://github.com/user-attachments/assets/d5e613e9-4eed-429f-b316-f9ef0a4f001d)
 
+  **"Trace" tab:**
+  
  
 **<ins>Limitation:<ins>**
  - (Temporary) the hardware communication code supports only Vector interfaces at the moment, hence can't be used with any other hardware interfaces (e.g., PEAK, DCI, ETAS etc.). But have plan to support in case the planned primary purpose of this tool is observed. Design is done considering this point.
