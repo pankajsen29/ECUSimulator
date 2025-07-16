@@ -1,7 +1,9 @@
 ﻿using HardwareDriverLayer.HwSettings;
 using HardwareDriverLayer.WrapperFactory;
 using HardwareDriverLayer.WrapperInterface;
+using HwSettingsLib;
 using System;
+using System.Collections.Concurrent;
 using System.Reflection;
 using System.Threading.Tasks;
 using UtilityLib;
@@ -22,14 +24,18 @@ namespace CommonHwLib
 
         private bool _hwInitState = false;
 
-        private CommunicationManager() 
+        public ConcurrentQueue<CANData> ReceivedCANDataQueue { get; set; }
+
+        public ConcurrentQueue<CANData> TraceCANDataQueue { get; set; }
+
+        private CommunicationManager()
         {
             //canfd settings are set by default
             ComSettings = new CommunicationSettings
             {
                 ACTIVE_CAN_HW = CAN_HW_INTERFACE.e_VECTOR_XL,
                 ACTIVE_CAN_ENV = CAN_ENV.e_CANFD,
-                ACTIVE_DATA_FRAME = CAN_DATA_FRAME_TYPE.e_FRAME_STD,
+                ACTIVE_DATA_FRAME = CAN_DATA_FRAME_TYPE.e_FRAME_FD,
                 ACTIVE_CANFD_SETTINGS = new CANFD_SETTINGS
                 {
                     arb_baudrate = 500000,
@@ -42,6 +48,9 @@ namespace CommonHwLib
                     data_sjw = 2
                 }
             };
+
+            ReceivedCANDataQueue = new ConcurrentQueue<CANData>();
+            TraceCANDataQueue = new ConcurrentQueue<CANData>();
         }
 
         /// <summary>
@@ -73,7 +82,7 @@ namespace CommonHwLib
                 ApplyUpdateOfCommunicationSettings();
             }
         }
-        
+
 
         /// <summary>
         /// Initializes the communication driver based on the specified settings.
@@ -107,7 +116,7 @@ namespace CommonHwLib
                             _hwWrapperFactory = null;
                             break;
                     }
-                }                
+                }
 
                 if (null != _hwWrapperFactory)
                 {
@@ -116,6 +125,9 @@ namespace CommonHwLib
                     hwWrapper.SetCommunicationBaudrate(ComSettings.ACTIVE_COM_BAUDRATE);
                     hwWrapper.SetCANFDSettings(ComSettings.ACTIVE_CANFD_SETTINGS);
                     hwWrapper.SetCANDataFrameType(ComSettings.ACTIVE_DATA_FRAME);
+                    hwWrapper.OnMessageReceived += HandleOnMessageReceived;
+                    hwWrapper.OnMessageSent += HandleOnMessageSent;
+
                     _hwInitState = hwWrapper.InitializeDriver();
                     if (_hwInitState)
                     {
@@ -171,7 +183,7 @@ namespace CommonHwLib
             if (ComSettings != null)
             {
                 //driver initialization for the firt time
-                if(string.IsNullOrWhiteSpace(_lastActiveComSettingsJSON))
+                if (string.IsNullOrWhiteSpace(_lastActiveComSettingsJSON))
                 {
                     return true;
                 }
@@ -209,6 +221,45 @@ namespace CommonHwLib
                 }
             }
             return null;
+        }
+
+        private bool SendMessage(uint id, byte[] data, uint len, byte payload)
+        {
+            if (_hwWrapperFactory != null)
+            {
+                HwWrapperBase hwWrapper = _hwWrapperFactory.GetHwWrapper();
+                if (hwWrapper != null)
+                {
+                    return hwWrapper.SendMessage(id, data, len, payload);
+                }
+            }
+            LastErrorMessage = "Hardware wrapper factory is not initialized or the wrapper is not available.";
+            return false;
+        }
+
+        private bool ReceiveMessage()
+        {
+            if (_hwWrapperFactory != null)
+            {
+                HwWrapperBase hwWrapper = _hwWrapperFactory.GetHwWrapper();
+                if (hwWrapper != null)
+                {
+                    return hwWrapper.ReceiveMessage();
+                }
+            }
+            LastErrorMessage = "Hardware wrapper factory is not initialized or the wrapper is not available.";
+            return false;
+        }
+
+        private void HandleOnMessageReceived(CANData data)
+        {
+            ReceivedCANDataQueue.Enqueue(data); //notify to UI to process the received data (and then prepare response)
+            TraceCANDataQueue.Enqueue(data); //notify to the trace view
+        }
+
+        private void HandleOnMessageSent(CANData data)
+        {
+            TraceCANDataQueue.Enqueue(data); //notify to the trace view
         }
     }
 }

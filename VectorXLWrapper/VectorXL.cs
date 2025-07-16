@@ -1,6 +1,8 @@
-﻿using System;
-using HardwareDriverLayer.HwSettings;
+﻿using HardwareDriverLayer.HwSettings;
 using HardwareDriverLayer.WrapperInterface;
+using HwSettingsLib;
+using System;
+using System.IO;
 using vxlapi_NET;
 
 
@@ -356,26 +358,407 @@ namespace HardwareDriverLayer.Wrapper
             return !_isDriverInitialized;
         }
 
+
         /// <summary>
-        /// 
+        /// sends a CAN message on the CAN BUS
         /// </summary>
         /// <param name="id"></param>
-        /// <param name="len"></param>
         /// <param name="data"></param>
+        /// <param name="len">total length of data bytes</param>
+        /// <param name="payload">length of each frame, used only for CANFD frames</param>
         /// <returns></returns>
-        public override bool SendMessage(uint id, byte len, byte[] data)
+        public override bool SendMessage(uint id, byte[] data, uint len, byte payload)
         {
-            return false; // Not implemented yet
+            bool returnState = false;
+            if (len > 0)
+            {
+                if ((!_isDriverInitialized) || (null == data) || (data.Length < len))
+                {
+                    return false;
+                }
+                if (_active_CAN_Env == CAN_ENV.e_CANFD)
+                {
+                    returnState = SendCANFDMessage(id, data, len, payload);
+                }
+                else
+                {
+                    returnState = SendCANMessage(id, data, len);
+                }
+            }
+            return returnState;
+        }
+
+        /// <summary>
+        /// transmits a CAN FD message on the CAN FD BUS.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="data"></param>
+        /// <param name="len"></param>
+        /// <param name="payload"></param>
+        /// <returns></returns>
+        private bool SendCANFDMessage(uint id, byte[] data, uint len, byte payload)
+        {
+            bool returnState = false;
+            byte numberOfFrames = GetNumberOfTxFrames(len, ref payload);
+            if (1 < numberOfFrames)
+            {
+                // Create an event collection with required messages (events)
+                var xlEventCol = new XLClass.xl_canfd_event_collection(0);
+
+                byte pos = 0;
+                while (pos < numberOfFrames)
+                {
+                    var xlCanTxEv = new XLClass.XLcanTxEvent();
+
+                    xlCanTxEv.tag = XLDefine.XL_CANFD_TX_EventTags.XL_CAN_EV_TAG_TX_MSG;
+                    xlCanTxEv.tagData.canId = id;
+                    if ((id > 0x7FF)) // If the ID is greater than 11 bits, set the extended bit
+                    {
+                        xlCanTxEv.tagData.canId |= 0x80000000;
+                    }
+
+                    byte actuallen = payload;
+                    byte actualpos = Convert.ToByte(payload * pos);
+                    if ((actualpos + actuallen) > len)
+                    {
+                        actuallen = Convert.ToByte(len - actualpos);
+                    }
+                    Array.Copy(data, actualpos, xlCanTxEv.tagData.data, 0, actuallen);
+
+                    xlCanTxEv.tagData.dlc = VectorUtil.GET_TRANSMIT_XL_CANFD_DLC(actuallen);
+                    if (_active_Data_Frame == CAN_DATA_FRAME_TYPE.e_FRAME_FD)
+                    {
+                        xlCanTxEv.tagData.msgFlags = XLDefine.XL_CANFD_TX_MessageFlags.XL_CAN_TXMSG_FLAG_BRS | XLDefine.XL_CANFD_TX_MessageFlags.XL_CAN_TXMSG_FLAG_EDL;
+                    }
+                    else
+                    {
+                        //xlCanTxEv.tagData.dlc = XLDefine.XL_CANFD_DLC.DLC_CAN_CANFD_8_BYTES;
+                        xlCanTxEv.tagData.msgFlags = 0; //Set to 0 to transmit a CAN 2.0 frame                                        
+                    }
+
+                    xlEventCol.xlCANFDEvent.Add(xlCanTxEv);
+                    xlEventCol.messageCount++;
+                    pos++;
+                }
+
+                // Transmit event collection
+                uint messageCounterSent = 0;
+                _xlStatus = _xlDriverObj.XL_CanTransmitEx(_portHandle, _accessMask, ref messageCounterSent, xlEventCol);
+                returnState = (_xlStatus == XLDefine.XL_Status.XL_SUCCESS);
+                if (returnState)
+                {
+                    foreach (var xlCanTxEv in xlEventCol.xlCANFDEvent)
+                    {
+                        NotifyMessageSent(xlCanTxEv.tagData.canId, xlCanTxEv.tagData.data, (byte)xlCanTxEv.tagData.dlc, payload);
+                    }
+                }
+            }
+            else
+            {
+                var xlCanTxEv = new XLClass.XLcanTxEvent();
+
+                xlCanTxEv.tag = XLDefine.XL_CANFD_TX_EventTags.XL_CAN_EV_TAG_TX_MSG;
+                xlCanTxEv.tagData.canId = id;
+                if ((id > 0x7FF)) // If the ID is greater than 11 bits, set the extended bit
+                {
+                    xlCanTxEv.tagData.canId |= 0x80000000;
+                }
+                Array.Copy(data, xlCanTxEv.tagData.data, len);
+
+                byte actuallen = payload;
+                xlCanTxEv.tagData.dlc = VectorUtil.GET_TRANSMIT_XL_CANFD_DLC(actuallen);
+                if (_active_Data_Frame == CAN_DATA_FRAME_TYPE.e_FRAME_FD)
+                {
+                    xlCanTxEv.tagData.msgFlags = XLDefine.XL_CANFD_TX_MessageFlags.XL_CAN_TXMSG_FLAG_BRS | XLDefine.XL_CANFD_TX_MessageFlags.XL_CAN_TXMSG_FLAG_EDL;
+                }
+                else
+                {
+                    //xlCanTxEv.tagData.dlc = XLDefine.XL_CANFD_DLC.DLC_CAN_CANFD_8_BYTES;
+                    xlCanTxEv.tagData.msgFlags = 0; //Set to 0 to transmit a CAN 2.0 frame
+                }
+
+                // Transmit events
+                uint messageCounterSent = 0;
+                _xlStatus = _xlDriverObj.XL_CanTransmitEx(_portHandle, _accessMask, ref messageCounterSent, xlCanTxEv);
+                returnState = (_xlStatus == XLDefine.XL_Status.XL_SUCCESS);
+                if (returnState)
+                {
+                    NotifyMessageSent(xlCanTxEv.tagData.canId, xlCanTxEv.tagData.data, (byte)xlCanTxEv.tagData.dlc, payload);
+                }
+            }
+            return returnState;
+        }
+
+        /// <summary>
+        /// transmits a CAN message on the CAN BUS.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="data"></param>
+        /// <param name="len"></param>
+        /// <returns></returns>
+        private bool SendCANMessage(uint id, byte[] data, uint len)
+        {
+            bool returnState = false;
+            var payload = (byte)8; // For CAN, the payload is always 8 bytes
+            byte numberOfFrames = GetNumberOfTxFrames(len, ref payload);
+            if (1 < numberOfFrames)
+            {
+                var canCol = new XLClass.xl_event_collection(0);
+                byte pos = 0;
+                while (pos < numberOfFrames)
+                {
+                    var canEv = new XLClass.xl_event();
+
+                    canEv.tagData.can_Msg.id = id;
+                    if ((id > 0x7FF)) // If the ID is greater than 11 bits, set the extended bit
+                    {
+                        canEv.tagData.can_Msg.id |= 0x80000000;
+                    }
+                    canEv.tag = XLDefine.XL_EventTags.XL_TRANSMIT_MSG;
+
+                    byte actuallen = 8;
+                    byte actualpos = Convert.ToByte(8 * pos);
+                    if ((actualpos + actuallen) > len)
+                    {
+                        actuallen = Convert.ToByte(len - actualpos);
+                    }
+                    canEv.tagData.can_Msg.dlc = actuallen;
+                    Array.Copy(data, actualpos, canEv.tagData.can_Msg.data, 0, actuallen);
+
+                    canCol.xlEvent.Add(canEv);
+                    canCol.messageCount++;
+                    pos++;
+                }
+                _xlStatus = _xlDriverObj.XL_CanTransmit(_portHandle, _accessMask, canCol);
+                returnState = ((_xlStatus == XLDefine.XL_Status.XL_ERR_QUEUE_IS_EMPTY) || (_xlStatus == XLDefine.XL_Status.XL_SUCCESS));
+                if (returnState)
+                {
+                    foreach (var canEv in canCol.xlEvent)
+                    {
+                        NotifyMessageSent(canEv.tagData.can_Msg.id, canEv.tagData.can_Msg.data, (byte)canEv.tagData.can_Msg.dlc, (uint)8);
+                    }
+                }
+            }
+            else
+            {
+                var canEv = new XLClass.xl_event();
+                canEv.tagData.can_Msg.id = id;
+                if ((id > 0x7FF)) // If the ID is greater than 11 bits, set the extended bit
+                {
+                    canEv.tagData.can_Msg.id |= 0x80000000;
+                }
+
+                byte actuallen = 8;
+                canEv.tagData.can_Msg.dlc = actuallen;
+                canEv.tag = XLDefine.XL_EventTags.XL_TRANSMIT_MSG;
+                Array.Copy(data, canEv.tagData.can_Msg.data, len);
+
+                _xlStatus = _xlDriverObj.XL_CanTransmit(_portHandle, _accessMask, canEv);
+                returnState = (_xlStatus == XLDefine.XL_Status.XL_SUCCESS);
+                if (returnState)
+                {
+                    NotifyMessageSent(canEv.tagData.can_Msg.id, canEv.tagData.can_Msg.data, (byte)canEv.tagData.can_Msg.dlc, (uint)8);
+                }
+            }
+            return returnState;
+        }
+
+        /// <summary>
+        /// Calculates the number of CAN frames required to transmit the specified data length 
+        /// based on the active CAN environment and payload size.
+        /// </summary>
+        /// <remarks>The calculation considers the active CAN environment and data frame type. For CAN FD
+        /// environments, the payload size may be adjusted to 8 bytes if FD frames are not required. For non-CAN FD
+        /// environments, the payload size is treated as 8 bytes, and any remaining bytes that do not fit into a full
+        /// frame will require an additional message.</remarks>
+        /// <param name="datalen">The total length of the data to be transmitted, in bytes.</param>
+        /// <param name="payload">The size of the payload, in bytes, for each CAN message. If less than 8, it will be adjusted to 8.</param>
+        /// <returns>The total number of CAN frames required to transmit the specified data length.</returns>
+        private byte GetNumberOfTxFrames(uint datalen, ref byte payload)
+        {
+            byte numberOfFrames = 0;
+            if (payload < 8)
+            {
+                payload = 8; // If payload is less than 8, set it to 8 bytes
+            }
+            if (_active_CAN_Env == CAN_ENV.e_CANFD)
+            {
+                if (_active_Data_Frame != CAN_DATA_FRAME_TYPE.e_FRAME_FD)
+                {
+                    payload = 8; // If fd frames are not required, then set payload to 8 bytes
+                }
+                numberOfFrames = Convert.ToByte(datalen / payload);
+                if (datalen % payload != 0) numberOfFrames++;
+            }
+            else
+            {
+                numberOfFrames = Convert.ToByte(datalen >> 3);
+                if (0 != (datalen & 0x07)) //if the length is not multiple of 8, then add one more extra frame for the extra bytes
+                {
+                    numberOfFrames++;
+                }
+            }
+            return numberOfFrames;
         }
 
         /// <summary>
         /// 
         /// </summary>
+        /// <param name="id"></param>
+        /// <param name="data"></param>
+        /// <param name="dlc"></param>
+        /// <param name="payload"></param>
+        private void NotifyMessageSent(uint id, byte[] data, byte dlc, uint payload)
+        {
+            CANData canData = new CANData
+            {
+                Timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff"),
+                //Id = id & 0x1FFFFFFF, // Mask to get the 29-bit ID
+                Id = id,
+                //Channel = 0,
+                Dlc = dlc,
+                RxData = false
+            };
+            if (dlc < 8)
+            {
+                canData.Data = new byte[dlc];
+                Array.Copy(data, canData.Data, dlc);
+            }
+            else
+            {
+                canData.Data = new byte[payload];
+                Array.Copy(data, canData.Data, payload);
+            }
+            // Notify the sent CAN data
+            RaiseOnMessageSent(canData);
+        }
+
+        /// <summary>
+        /// receives a CAN/CANFD message from the CAN BUS.
+        /// </summary>
         /// <returns></returns>
         public override bool ReceiveMessage()
         {
-            return false; // Not implemented yet
+            if (!_isDriverInitialized)
+            {
+                return false;
+            }
+            try
+            {
+                if (_active_CAN_Env == CAN_ENV.e_CANFD)
+                {
+                    // Create new object containing received data
+                    var receivedRxEvent = new XLClass.XLcanRxEvent();
+                    do
+                    {
+                        _xlStatus = _xlDriverObj.XL_CanReceive(_portHandle, ref receivedRxEvent);
+                        if (XLDefine.XL_Status.XL_SUCCESS == _xlStatus)
+                        {
+                            NotifyCANFDMessageReceived(receivedRxEvent);
+                        }
+                    } while (_xlStatus == XLDefine.XL_Status.XL_SUCCESS);
+                }
+                else
+                {
+                    var xlevent = new XLClass.xl_event();
+                    do
+                    {
+                        _xlStatus = _xlDriverObj.XL_Receive(_portHandle, ref xlevent);
+                        if (XLDefine.XL_Status.XL_SUCCESS == _xlStatus)
+                        {
+                            NotifyCANMessageReceived(xlevent);
+                        }
+                    } while (_xlStatus == XLDefine.XL_Status.XL_SUCCESS);
+                }
+            }
+            catch (IOException ex)
+            {
+                if (ex.Message.Length > 0)
+                {
+                    /* ToDo: Global exeption eintrag schreiben */
+                }
+            }
+            catch (IndexOutOfRangeException exp)
+            {
+                if (exp.Message.Length > 0)
+                {
+                    /* ToDo: Global exeption eintrag schreiben */
+                }
+            }
+            return true;
         }
+
+        /// <summary>
+        /// decodes the received CAN message and raises the OnMessageReceived event.
+        /// </summary>
+        /// <param name="xlevent"></param>
+        private void NotifyCANMessageReceived(XLClass.xl_event xlevent)
+        {
+            if (null == xlevent)
+            {
+                return;
+            }
+            try
+            {
+                CANData canData = new CANData
+                {
+                    Timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff"),
+                    //Id = xlevent.tagData.can_Msg.id & 0x1FFFFFFF, // Mask to get the 29-bit ID
+                    Id = xlevent.tagData.can_Msg.id,
+                    Channel = xlevent.portHandle,
+                    Dlc = (byte)xlevent.tagData.can_Msg.dlc,
+                    RxData = true,
+                    Data = new byte[xlevent.tagData.can_Msg.dlc]
+                };
+                for (int i = 0; i < canData.Data.Length; i++)
+                {
+                    canData.Data[i] = xlevent.tagData.can_Msg.data[i];
+                }
+                // Notify the received CAN data
+                RaiseOnMessageReceived(canData);
+            }
+            catch (Exception ex)
+            {
+                _lastErrorMessage = "Error processing received CAN data: " + ex.Message;
+                return;
+            }
+        }
+
+        /// <summary>
+        /// decodes the received CAN FD message and raises the OnMessageReceived event for CAN FD.
+        /// </summary>
+        /// <param name="receivedRxEvent"></param>
+        private void NotifyCANFDMessageReceived(XLClass.XLcanRxEvent receivedRxEvent)
+        {
+            if (null == receivedRxEvent)
+            {
+                return;
+            }
+            try
+            {
+                CANData canData = new CANData
+                {
+                    Timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff"),
+                    //Id = receivedRxEvent.tagData.canRxOkMsg.canId & 0x1FFFFFFF, // Mask to get the 29-bit ID
+                    Id = receivedRxEvent.tagData.canRxOkMsg.canId,
+                    Channel = receivedRxEvent.channelIndex,
+                    Dlc = (byte)receivedRxEvent.tagData.canRxOkMsg.dlc,
+                    RxData = true,
+                    Data = new byte[VectorUtil.GET_CANFD_PAYLOAD(receivedRxEvent.tagData.canRxOkMsg.dlc)]
+                };
+                for (int i = 0; i < canData.Data.Length; i++)
+                {
+                    canData.Data[i] = receivedRxEvent.tagData.canRxOkMsg.data[i];
+                }
+                // Notify the received CAN data
+                RaiseOnMessageReceived(canData);
+            }
+            catch (Exception ex)
+            {
+                _lastErrorMessage = "Error processing received CANFD data: " + ex.Message;
+                return;
+            }
+        }        
 
         /// <summary>
         /// Retrieves the last error message recorded.
