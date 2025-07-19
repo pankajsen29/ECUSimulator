@@ -14,14 +14,16 @@
 - Testable for CANFD communications too, (i.e., with payload higher than 8 bytes)
 
 **<ins>Motivation:<ins>**
-- the main idea is to enable automotive tool developers perform testing without the need of physical hardwares (e.g., powerpack/ECU and the ECU interface hardware).
-- to have a simple UI unlike already available softwares in market (e.g., CANalyzer (link) or BUSMASTER (link)).
+- the main idea is to enable automotive tool developers perform testing without the need of physical hardwares (e.g., powerpack/ECU and the ECU interface hardware) - i.e., by simulating the ECU responses.
+- to have a simple UI unlike already available softwares in market (e.g., CANalyzer ([link](https://www.vector.com/gb/en/support-downloads/download-center/)) or BUSMASTER ([link](https://rbei-etas.github.io/busmaster/))) for configuing the request-response pair for simulation.
 - Unlike CANalyzer:
     - no cost for the license.
-    - no new programming language (CAPL (Communication Access Programming Language) is used by CANalyzer) is required to be learnt or used.
+    - no new programming language (CAPL (Communication Access Programming Language) is used by CANalyzer) is required to be learnt or used for simulation tests.
     - not similar to any other CAPL solutions, as for these kind of solutions would need physical hardware from Vector, thereby requiring to buy the license.
+    - also, no generic CAN tracing (i.e., only the relevant ids are filtered in this tool)
 - Unlike BUSMASTER:
-    - no cost for the license (though BUSMASTER is free for testing CAN communication, CANFD test feature is licensed)  
+    - no cost for the license (though BUSMASTER is free for testing CAN communication, CANFD test feature is licensed)
+    - as mentioned already, no generic CAN tracing (i.e., only the relevant ids are filtered in this tool)
 
 
 **<ins>Target Platform:<ins>**
