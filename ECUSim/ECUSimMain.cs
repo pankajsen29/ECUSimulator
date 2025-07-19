@@ -1,8 +1,12 @@
 ﻿using CommonHwLib;
+using HwSettingsLib;
 using MessageDesignerLib;
+using MessageProcessorLib;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Security.Principal;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using UtilityLib;
@@ -13,7 +17,10 @@ namespace ECUSim
     public partial class ECUSimMain : Form
     {
         private MessageConfigManager _msgConfigManager;
-        private MessageManager _msgManager;
+        private MessageProcessor _msgProcessor;
+
+        private CancellationTokenSource _ctsCanSending;
+        private CancellationTokenSource _ctsCanRxPooling;
         public ECUSimMain()
         {
             InitializeComponent();
@@ -22,7 +29,7 @@ namespace ECUSim
             ComManagerObj.ApplyUpdateOfCommunicationSettings += ApplyUpdatedCommunicationSettings;
 
             _msgConfigManager = new MessageConfigManager();
-            _msgManager = new MessageManager();
+            _msgProcessor = new MessageProcessor(ComManagerObj);
         }
         private CommunicationManager ComManagerObj
         {
@@ -170,6 +177,155 @@ namespace ECUSim
                 MessageBox.Show(message, "Invalid Message Config File Path!, Enter full path of a json to be created/modified.", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
-        }       
+        }
+
+        private async void btnStartTransmission_Click(object sender, EventArgs e)
+        {
+            var isMsgConfigLoaded = await _msgProcessor.LoadMessageConfig(ComManagerObj.MessageConfigFile);
+            if (isMsgConfigLoaded)
+            {
+                if (btnStartTransmission.Text.ToUpper().Equals("START"))
+                {
+                    btnStartTransmission.Text = "STOP";
+                    StartCanSendingLoop();
+
+                    StartCanRxPoolingLoop();
+                }
+                else if (btnStartTransmission.Text.ToUpper().Equals("STOP"))
+                {
+                    StopCanSendingLoop();
+                    StopCanRxPoolingLoop();
+                }
+            }
+            else
+            {                 
+                MessageBox.Show("Error loading message configuration file: " + _msgProcessor.LastErrorMessage, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// sending of longer CAN data is possible, i.e., in terms of multiple CAN/CANFD frames.
+        /// </summary>
+        public void StartCanSendingLoop()
+        {
+            _ctsCanSending = new CancellationTokenSource();
+
+            Task.Run(() =>
+            {
+                try
+                {
+                    var token = _ctsCanSending.Token;
+                    const long intervalMicroseconds = 500;
+                    HighPrecisionTimer timer = new HighPrecisionTimer();
+
+                    while (true)
+                    {
+                        token.ThrowIfCancellationRequested();
+
+                        timer.Reset();
+
+                        SendCanMessage();
+
+                        // Hybrid wait to prevent high CPU usage
+                        HighPrecisionTimer.WaitMicroseconds(intervalMicroseconds);
+                    }
+                }
+                catch (OperationCanceledException ocExp)
+                {
+                    //log or clean up
+                    this.Invoke(() =>
+                    {
+                        btnStartTransmission.Text = "START";
+                    });
+                }
+            });
+        }
+
+        private void SendCanMessage()
+        {
+            //Debug.WriteLine("CAN Message Sent at " + DateTime.Now.ToString("HH:mm:ss.ffffff"));
+
+            if (null != _msgProcessor)
+            {
+                while (_msgProcessor.CANTxDataQueue.Count > 0)
+                {
+                    CANData? canData;
+                    if (_msgProcessor.CANTxDataQueue.TryDequeue(out canData) && canData != null)
+                    {
+                        ComManagerObj.SendMessage(canData);
+                    }
+                }
+            }           
+        }
+
+
+        /// <summary>
+        /// currently receiving of only single CAN/CANFD frame is supported.
+        /// </summary>
+        public void StartCanRxPoolingLoop()
+        {
+            _ctsCanRxPooling = new CancellationTokenSource();
+
+            Task.Run(() =>
+            {
+                try
+                {
+                    var token = _ctsCanRxPooling.Token;
+                    const long intervalMicroseconds = 100;
+                    HighPrecisionTimer timer = new HighPrecisionTimer();
+
+                    while (true)
+                    {
+                        token.ThrowIfCancellationRequested();
+
+                        timer.Reset();
+
+                        ReceiveCanMessage();
+
+                        // Hybrid wait to prevent high CPU usage
+                        HighPrecisionTimer.WaitMicroseconds(intervalMicroseconds);
+                    }
+                }
+                catch (OperationCanceledException ocExp)
+                {
+                    //log or clean up
+                    this.Invoke(() =>
+                    {
+                        btnStartTransmission.Text = "START";
+                    });
+                }
+            });
+        }
+
+        private void ReceiveCanMessage()
+        {            
+            if (ComManagerObj.ReceiveMessage())
+            {
+                //Debug.WriteLine("CAN Message Received at " + DateTime.Now.ToString("HH:mm:ss.ffffff"));
+                _msgProcessor.HandleReceivedCANMessage();
+            }
+        }
+
+        /// <summary>
+        /// stops the CAN Rx pooling loop by cancelling the token source.
+        /// Note: can be called from the UI thread or any other thread. CancellationToken uses thread-safe, lock-free internal signaling.
+        /// It internally sets token.IsCancellationRequested flag, which is a non-blocking property that can be polled from any thread.
+        /// The flag is set in memory and is immediately visible to all threads (due to .NET's memory model and volatile field usage).
+        /// </summary>
+        public void StopCanRxPoolingLoop()
+        {
+            _ctsCanRxPooling?.Cancel();
+        }
+
+        /// <summary>
+        /// stops the CAN sending loop by cancelling the token source.
+        /// Note: can be called from the UI thread or any other thread. CancellationToken uses thread-safe, lock-free internal signaling.
+        /// It internally sets token.IsCancellationRequested flag, which is a non-blocking property that can be polled from any thread.
+        /// The flag is set in memory and is immediately visible to all threads (due to .NET's memory model and volatile field usage).
+        /// </summary>
+        public void StopCanSendingLoop()
+        {
+            _ctsCanSending?.Cancel();
+        }
     }
 }

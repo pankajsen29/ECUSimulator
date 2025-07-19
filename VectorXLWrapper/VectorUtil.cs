@@ -46,9 +46,9 @@ namespace HardwareDriverLayer.Wrapper
         /// </summary>
         /// <param name="dlc"></param>
         /// <returns></returns>
-        internal static uint GET_CANFD_PAYLOAD(XLDefine.XL_CANFD_DLC dlc)
+        internal static byte GET_CANFD_PAYLOAD(XLDefine.XL_CANFD_DLC dlc)
         {
-            uint payload = 8;
+            byte payload = 8;
             switch (dlc)
             {
                 case XLDefine.XL_CANFD_DLC.DLC_CAN_CANFD_0_BYTES: payload = 0; break; //DLC = 0

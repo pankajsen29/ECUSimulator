@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<Company>Pankaj Sen</Company>
+		<Authors>Pankaj Sen</Authors>
+		<Version>1.0.0</Version>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+		<OutputPath>..\Output\</OutputPath>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+		<OutputPath>..\Output\</OutputPath>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\CommonHwLib\CommonHwLib.csproj" />
+		<ProjectReference Include="..\MessageDesignerLib\MessageDesignerLib.csproj" />
+		<ProjectReference Include="..\UtilityLib\UtilityLib.csproj" />
+	</ItemGroup>
+
+</Project>

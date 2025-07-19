@@ -223,21 +223,21 @@ namespace CommonHwLib
             return null;
         }
 
-        private bool SendMessage(uint id, byte[] data, uint len, byte payload)
+        public bool SendMessage(CANData candata)
         {
             if (_hwWrapperFactory != null)
             {
                 HwWrapperBase hwWrapper = _hwWrapperFactory.GetHwWrapper();
                 if (hwWrapper != null)
                 {
-                    return hwWrapper.SendMessage(id, data, len, payload);
+                    return hwWrapper.SendMessage(candata);
                 }
             }
             LastErrorMessage = "Hardware wrapper factory is not initialized or the wrapper is not available.";
             return false;
         }
 
-        private bool ReceiveMessage()
+        public bool ReceiveMessage()
         {
             if (_hwWrapperFactory != null)
             {
@@ -253,6 +253,8 @@ namespace CommonHwLib
 
         private void HandleOnMessageReceived(CANData data)
         {
+            /// todo: logic to add only the relevant rx ids, not all the received data on the bus 
+
             ReceivedCANDataQueue.Enqueue(data); //notify to UI to process the received data (and then prepare response)
             TraceCANDataQueue.Enqueue(data); //notify to the trace view
         }

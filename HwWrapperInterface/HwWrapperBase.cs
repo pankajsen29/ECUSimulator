@@ -12,7 +12,7 @@ namespace HardwareDriverLayer.WrapperInterface
         public abstract void SetCANFDSettings(CANFD_SETTINGS canfdsettings);
         public abstract bool InitializeDriver();
         public abstract bool CloseDriver();
-        public abstract bool SendMessage(uint id, byte[] data, uint len, byte payload);
+        public abstract bool SendMessage(CANData candata);
         public abstract bool ReceiveMessage();
         public abstract string GetLastErrorMessage();
 

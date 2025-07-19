@@ -43,6 +43,7 @@ namespace ECUSim
             txtMessageConfigFilePath = new System.Windows.Forms.TextBox();
             tabCommunicationSettings = new System.Windows.Forms.TabPage();
             InitCANDriver = new System.Windows.Forms.Button();
+            btnStartTransmission = new System.Windows.Forms.Button();
             StatusInfo.SuspendLayout();
             tlpMasterLayout.SuspendLayout();
             tcMain.SuspendLayout();
@@ -77,6 +78,7 @@ namespace ECUSim
             tlpMasterLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 15F));
             tlpMasterLayout.Controls.Add(tcMain, 0, 1);
             tlpMasterLayout.Controls.Add(InitCANDriver, 2, 0);
+            tlpMasterLayout.Controls.Add(btnStartTransmission, 1, 0);
             tlpMasterLayout.Dock = System.Windows.Forms.DockStyle.Fill;
             tlpMasterLayout.Location = new System.Drawing.Point(0, 0);
             tlpMasterLayout.Margin = new System.Windows.Forms.Padding(2);
@@ -221,15 +223,27 @@ namespace ECUSim
             // 
             // InitCANDriver
             // 
+            InitCANDriver.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             InitCANDriver.BackColor = System.Drawing.Color.Red;
-            InitCANDriver.Dock = System.Windows.Forms.DockStyle.Fill;
             InitCANDriver.Location = new System.Drawing.Point(972, 3);
             InitCANDriver.Name = "InitCANDriver";
             InitCANDriver.Size = new System.Drawing.Size(166, 52);
             InitCANDriver.TabIndex = 1;
-            InitCANDriver.Text = "Init/ReInit CAN";
+            InitCANDriver.Text = "INIT/RE-INIT CAN";
             InitCANDriver.UseVisualStyleBackColor = false;
             InitCANDriver.Click += InitCANDriver_Click;
+            // 
+            // btnStartTransmission
+            // 
+            btnStartTransmission.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            btnStartTransmission.BackColor = System.Drawing.Color.Gold;
+            btnStartTransmission.Location = new System.Drawing.Point(801, 3);
+            btnStartTransmission.Name = "btnStartTransmission";
+            btnStartTransmission.Size = new System.Drawing.Size(165, 52);
+            btnStartTransmission.TabIndex = 2;
+            btnStartTransmission.Text = "START";
+            btnStartTransmission.UseVisualStyleBackColor = false;
+            btnStartTransmission.Click += btnStartTransmission_Click;
             // 
             // ECUSimMain
             // 
@@ -270,6 +284,7 @@ namespace ECUSim
         private System.Windows.Forms.Button InitCANDriver;
         private System.Windows.Forms.Button btnLoadMsgConfig;
         private System.Windows.Forms.TextBox txtMessageConfigFilePath;
+        private System.Windows.Forms.Button btnStartTransmission;
     }
 }
 

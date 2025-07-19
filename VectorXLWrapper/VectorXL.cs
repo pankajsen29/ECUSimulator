@@ -367,22 +367,22 @@ namespace HardwareDriverLayer.Wrapper
         /// <param name="len">total length of data bytes</param>
         /// <param name="payload">length of each frame, used only for CANFD frames</param>
         /// <returns></returns>
-        public override bool SendMessage(uint id, byte[] data, uint len, byte payload)
+        public override bool SendMessage(CANData candata)
         {
             bool returnState = false;
-            if (len > 0)
+            if (candata.Length > 0)
             {
-                if ((!_isDriverInitialized) || (null == data) || (data.Length < len))
+                if ((!_isDriverInitialized) || (null == candata))
                 {
                     return false;
                 }
                 if (_active_CAN_Env == CAN_ENV.e_CANFD)
                 {
-                    returnState = SendCANFDMessage(id, data, len, payload);
+                    returnState = SendCANFDMessage(candata.Id, candata.Data, candata.Length, candata.Payload);
                 }
                 else
                 {
-                    returnState = SendCANMessage(id, data, len);
+                    returnState = SendCANMessage(candata.Id, candata.Data, candata.Length);
                 }
             }
             return returnState;
@@ -535,7 +535,7 @@ namespace HardwareDriverLayer.Wrapper
                 {
                     foreach (var canEv in canCol.xlEvent)
                     {
-                        NotifyMessageSent(canEv.tagData.can_Msg.id, canEv.tagData.can_Msg.data, (byte)canEv.tagData.can_Msg.dlc, (uint)8);
+                        NotifyMessageSent(canEv.tagData.can_Msg.id, canEv.tagData.can_Msg.data, (byte)canEv.tagData.can_Msg.dlc, (byte)8);
                     }
                 }
             }
@@ -557,7 +557,7 @@ namespace HardwareDriverLayer.Wrapper
                 returnState = (_xlStatus == XLDefine.XL_Status.XL_SUCCESS);
                 if (returnState)
                 {
-                    NotifyMessageSent(canEv.tagData.can_Msg.id, canEv.tagData.can_Msg.data, (byte)canEv.tagData.can_Msg.dlc, (uint)8);
+                    NotifyMessageSent(canEv.tagData.can_Msg.id, canEv.tagData.can_Msg.data, (byte)canEv.tagData.can_Msg.dlc, (byte)8);
                 }
             }
             return returnState;
@@ -608,16 +608,18 @@ namespace HardwareDriverLayer.Wrapper
         /// <param name="data"></param>
         /// <param name="dlc"></param>
         /// <param name="payload"></param>
-        private void NotifyMessageSent(uint id, byte[] data, byte dlc, uint payload)
+        private void NotifyMessageSent(uint id, byte[] data, byte dlc, byte payload)
         {
             CANData canData = new CANData
             {
                 Timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff"),
                 //Id = id & 0x1FFFFFFF, // Mask to get the 29-bit ID
                 Id = id,
-                //Channel = 0,
+                //Channel = 0,                
                 Dlc = dlc,
-                RxData = false
+                Payload = payload,                
+                IsCanFdFrame = (_active_CAN_Env == CAN_ENV.e_CANFD && _active_Data_Frame == CAN_DATA_FRAME_TYPE.e_FRAME_FD),
+                IsRxData = false
             };
             if (dlc < 8)
             {
@@ -629,6 +631,8 @@ namespace HardwareDriverLayer.Wrapper
                 canData.Data = new byte[payload];
                 Array.Copy(data, canData.Data, payload);
             }
+            canData.Length = (uint)canData.Data.Length;
+
             // Notify the sent CAN data
             RaiseOnMessageSent(canData);
         }
@@ -707,13 +711,17 @@ namespace HardwareDriverLayer.Wrapper
                     Id = xlevent.tagData.can_Msg.id,
                     Channel = xlevent.portHandle,
                     Dlc = (byte)xlevent.tagData.can_Msg.dlc,
-                    RxData = true,
+                    Payload = (byte)xlevent.tagData.can_Msg.dlc,
+                    IsRxData = true,
+                    IsCanFdFrame = false,
                     Data = new byte[xlevent.tagData.can_Msg.dlc]
                 };
                 for (int i = 0; i < canData.Data.Length; i++)
                 {
                     canData.Data[i] = xlevent.tagData.can_Msg.data[i];
                 }
+                canData.Length = (uint)canData.Data.Length;
+
                 // Notify the received CAN data
                 RaiseOnMessageReceived(canData);
             }
@@ -743,13 +751,16 @@ namespace HardwareDriverLayer.Wrapper
                     Id = receivedRxEvent.tagData.canRxOkMsg.canId,
                     Channel = receivedRxEvent.channelIndex,
                     Dlc = (byte)receivedRxEvent.tagData.canRxOkMsg.dlc,
-                    RxData = true,
+                    Payload = VectorUtil.GET_CANFD_PAYLOAD(receivedRxEvent.tagData.canRxOkMsg.dlc),
+                    IsRxData = true,
+                    IsCanFdFrame = (receivedRxEvent.tagData.canRxOkMsg.msgFlags != XLDefine.XL_CANFD_RX_MessageFlags.XL_CAN_RXMSG_FLAG_NONE),
                     Data = new byte[VectorUtil.GET_CANFD_PAYLOAD(receivedRxEvent.tagData.canRxOkMsg.dlc)]
                 };
                 for (int i = 0; i < canData.Data.Length; i++)
                 {
                     canData.Data[i] = receivedRxEvent.tagData.canRxOkMsg.data[i];
                 }
+                canData.Length = (uint)canData.Data.Length;
                 // Notify the received CAN data
                 RaiseOnMessageReceived(canData);
             }
