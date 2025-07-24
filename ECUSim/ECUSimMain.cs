@@ -184,12 +184,16 @@ namespace ECUSim
             var isMsgConfigLoaded = await _msgProcessor.LoadMessageConfig(ComManagerObj.MessageConfigFile);
             if (isMsgConfigLoaded)
             {
+                _msgProcessor.CANTxDataQueue.Clear();
                 if (btnStartTransmission.Text.ToUpper().Equals("START"))
                 {
                     btnStartTransmission.Text = "STOP";
                     StartCanSendingLoop();
 
-                    StartCanRxPoolingLoop();
+                    if (_msgProcessor.RegisterCANRxEvent())
+                    {
+                        StartCanRxPoolingLoop();
+                    }
                 }
                 else if (btnStartTransmission.Text.ToUpper().Equals("STOP"))
                 {
@@ -198,7 +202,7 @@ namespace ECUSim
                 }
             }
             else
-            {                 
+            {
                 MessageBox.Show("Error loading message configuration file: " + _msgProcessor.LastErrorMessage, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -255,7 +259,7 @@ namespace ECUSim
                         ComManagerObj.SendMessage(canData);
                     }
                 }
-            }           
+            }
         }
 
 
@@ -298,11 +302,10 @@ namespace ECUSim
         }
 
         private void ReceiveCanMessage()
-        {            
+        {
             if (ComManagerObj.ReceiveMessage())
             {
                 //Debug.WriteLine("CAN Message Received at " + DateTime.Now.ToString("HH:mm:ss.ffffff"));
-                _msgProcessor.HandleReceivedCANMessage();
             }
         }
 

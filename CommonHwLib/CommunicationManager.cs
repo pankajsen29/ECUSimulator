@@ -4,6 +4,7 @@ using HardwareDriverLayer.WrapperInterface;
 using HwSettingsLib;
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
 using UtilityLib;
@@ -24,9 +25,9 @@ namespace CommonHwLib
 
         private bool _hwInitState = false;
 
-        public ConcurrentQueue<CANData> ReceivedCANDataQueue { get; set; }
+        public Action<CANData> NotifyTraceView { get; set; } = null;
 
-        public ConcurrentQueue<CANData> TraceCANDataQueue { get; set; }
+        public List<CANEvent> CANRxEventsList { get; set; } = null;
 
         private CommunicationManager()
         {
@@ -48,9 +49,7 @@ namespace CommonHwLib
                     data_sjw = 2
                 }
             };
-
-            ReceivedCANDataQueue = new ConcurrentQueue<CANData>();
-            TraceCANDataQueue = new ConcurrentQueue<CANData>();
+            CANRxEventsList = new List<CANEvent>();
         }
 
         /// <summary>
@@ -81,6 +80,23 @@ namespace CommonHwLib
             {
                 ApplyUpdateOfCommunicationSettings();
             }
+        }
+
+        /// <summary>
+        /// This is used to add a new CAN Rx event to the list of CAN Rx events.
+        /// This is useful when the application has many different modules or UI for example,
+        /// and each module can then add its own CAN Rx events to the list to indicate the CAN IDs it is interested in.
+        /// With this approach, there is no need of any generic handler in the application for all the CAN Rx events, 
+        /// and each module can handle its own CAN Rx events independently.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="canId"></param>
+        /// <returns></returns>
+        public CANEvent AddCANRxEvent(string name, uint canId)
+        {
+            var canEvent = new CANEvent(name, canId);
+            CANRxEventsList.Add(canEvent);
+            return canEvent;
         }
 
 
@@ -253,15 +269,28 @@ namespace CommonHwLib
 
         private void HandleOnMessageReceived(CANData data)
         {
-            /// todo: logic to add only the relevant rx ids, not all the received data on the bus 
-
-            ReceivedCANDataQueue.Enqueue(data); //notify to UI to process the received data (and then prepare response)
-            TraceCANDataQueue.Enqueue(data); //notify to the trace view
+            if (CANRxEventsList != null && CANRxEventsList.Count > 0)
+            {
+                foreach (var canEvent in CANRxEventsList)
+                {
+                    if (canEvent.CanId == data.Id) // it ensures only the relevant rx ids are considered, not all the received data on the bus 
+                    {
+                        canEvent.RaiseOnMessageReceived(data);
+                        if (NotifyTraceView != null)
+                        {
+                            NotifyTraceView(data); //notify to the trace view
+                        }
+                    }
+                }
+            }            
         }
 
         private void HandleOnMessageSent(CANData data)
         {
-            TraceCANDataQueue.Enqueue(data); //notify to the trace view
+            if (NotifyTraceView != null)
+            {
+                NotifyTraceView(data); //notify to the trace view
+            }
         }
     }
 }

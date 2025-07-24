@@ -713,13 +713,16 @@ namespace HardwareDriverLayer.Wrapper
                     Dlc = (byte)xlevent.tagData.can_Msg.dlc,
                     Payload = (byte)xlevent.tagData.can_Msg.dlc,
                     IsRxData = true,
-                    IsCanFdFrame = false,
-                    Data = new byte[xlevent.tagData.can_Msg.dlc]
+                    IsCanFdFrame = false                    
                 };
-                for (int i = 0; i < canData.Data.Length; i++)
+                if (0 < xlevent.tagData.can_Msg.dlc)
                 {
-                    canData.Data[i] = xlevent.tagData.can_Msg.data[i];
-                }
+                    canData.Data = new byte[xlevent.tagData.can_Msg.dlc];
+                    for (int i = 0; i < canData.Data.Length; i++)
+                    {
+                        canData.Data[i] = xlevent.tagData.can_Msg.data[i];
+                    }
+                }                    
                 canData.Length = (uint)canData.Data.Length;
 
                 // Notify the received CAN data
@@ -753,12 +756,15 @@ namespace HardwareDriverLayer.Wrapper
                     Dlc = (byte)receivedRxEvent.tagData.canRxOkMsg.dlc,
                     Payload = VectorUtil.GET_CANFD_PAYLOAD(receivedRxEvent.tagData.canRxOkMsg.dlc),
                     IsRxData = true,
-                    IsCanFdFrame = (receivedRxEvent.tagData.canRxOkMsg.msgFlags != XLDefine.XL_CANFD_RX_MessageFlags.XL_CAN_RXMSG_FLAG_NONE),
-                    Data = new byte[VectorUtil.GET_CANFD_PAYLOAD(receivedRxEvent.tagData.canRxOkMsg.dlc)]
+                    IsCanFdFrame = (receivedRxEvent.tagData.canRxOkMsg.msgFlags != XLDefine.XL_CANFD_RX_MessageFlags.XL_CAN_RXMSG_FLAG_NONE)                  
                 };
-                for (int i = 0; i < canData.Data.Length; i++)
+                if (0 < receivedRxEvent.tagData.canRxOkMsg.dlc)
                 {
-                    canData.Data[i] = receivedRxEvent.tagData.canRxOkMsg.data[i];
+                    canData.Data = new byte[VectorUtil.GET_CANFD_PAYLOAD(receivedRxEvent.tagData.canRxOkMsg.dlc)];
+                    for (int i = 0; i < canData.Data.Length; i++)
+                    {
+                        canData.Data[i] = receivedRxEvent.tagData.canRxOkMsg.data[i];
+                    }
                 }
                 canData.Length = (uint)canData.Data.Length;
                 // Notify the received CAN data

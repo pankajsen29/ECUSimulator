@@ -15,18 +15,22 @@
         </Grid.RowDefinitions>
         <Grid Grid.Row="0">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="0.2*" />
-                <ColumnDefinition Width="0.2*" />
-                <ColumnDefinition Width="0.2*" />
-                <ColumnDefinition Width="0.2*" />
-                <ColumnDefinition Width="0.2*" />
+                <ColumnDefinition Width="0.33*" />
+                <ColumnDefinition Width="0.33*" />
+                <ColumnDefinition Width="0.10*" />
+                <ColumnDefinition Width="0.10*" />
+                <ColumnDefinition Width="0.16*" />
             </Grid.ColumnDefinitions>
 
-                <CheckBox Grid.Column="3"              
+                <CheckBox Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right"             
                 Content="Overwrite"                
                 IsChecked="{Binding IsOverwriteEnabled,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
 
-                <Button Grid.Column="4" 
+                <CheckBox Grid.Column="3" VerticalAlignment="Center" HorizontalAlignment="Right"                
+                Content="Logging"                
+                IsChecked="{Binding IsLoggingEnabled,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+
+                <Button Grid.Column="4" Height="23" Width="80" Margin="0,2,0,2" VerticalAlignment="Center" HorizontalAlignment="Right"  
                 Content="Clear"
                 Command="{Binding ClearTraceCommand}"/>
         </Grid>
@@ -49,10 +53,12 @@
                 HorizontalGridLinesBrush="LightBlue" 
                 VerticalGridLinesBrush="LightBlue">
             <DataGrid.Columns>
-                <DataGridTextColumn Width="0.2*" Header="Timestamp" Binding="{Binding Timestamp}" IsReadOnly="True"/>
-                <DataGridTextColumn Width="0.15*" Header="ID" Binding="{Binding ID}" IsReadOnly="True"/>
-                <DataGridTextColumn Width="0.1*" Header="DLC" Binding="{Binding DLC}" IsReadOnly="True"/>
-                <DataGridTextColumn Width="0.55*" Header="Data" Binding="{Binding Data}" IsReadOnly="True"/>
+                <DataGridTextColumn Width="0.15*" Header="Timestamp" Binding="{Binding Timestamp}" IsReadOnly="True"/>
+                <DataGridTextColumn Width="0.10*" Header="Id" Binding="{Binding Id}" IsReadOnly="True"/>
+                <DataGridTextColumn Width="0.03*" Header="Dlc" Binding="{Binding Dlc}" IsReadOnly="True"/>
+                <DataGridTextColumn Width="0.05*" Header="CANFD?" Binding="{Binding IsCanFdFrame}" IsReadOnly="True"/>
+                <DataGridTextColumn Width="0.05*" Header="Rx?" Binding="{Binding IsRxData}" IsReadOnly="True"/>
+                <DataGridTextColumn Width="0.62*" Header="Data" Binding="{Binding DataBytesHex}" IsReadOnly="True"/>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>
