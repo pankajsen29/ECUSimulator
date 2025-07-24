@@ -190,10 +190,14 @@ namespace ECUSim
                     btnStartTransmission.Text = "STOP";
                     StartCanSendingLoop();
 
-                    if (_msgProcessor.RegisterCANRxEvent())
+                    if (!chkTxOnly.Checked) //only for Testing
                     {
-                        StartCanRxPoolingLoop();
+                        if (_msgProcessor.RegisterCANRxEvent())
+                        {
+                            StartCanRxPoolingLoop();
+                        }
                     }
+
                 }
                 else if (btnStartTransmission.Text.ToUpper().Equals("STOP"))
                 {
@@ -292,11 +296,15 @@ namespace ECUSim
                 }
                 catch (OperationCanceledException ocExp)
                 {
-                    //log or clean up
-                    this.Invoke(() =>
+                    if (!chkTxOnly.Checked) //only for Testing
                     {
-                        btnStartTransmission.Text = "START";
-                    });
+                        //log or clean up
+                        this.Invoke(() =>
+                        {
+                            btnStartTransmission.Text = "START";
+                        });
+                    }
+
                 }
             });
         }
@@ -329,6 +337,23 @@ namespace ECUSim
         public void StopCanSendingLoop()
         {
             _ctsCanSending?.Cancel();
+        }
+
+        /// <summary>
+        /// this is only for testing purposes, i.e., enable it to only send the TX messages from the messagesConfig.json to the CAN bus,
+        /// so that another instance (with this checkbox disabled) of the application can receive them and 
+        /// then process, trace, log and send the corresponding response from the messagesConfig.json file to the CAN bus.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void chkTxOnly_CheckedChanged(object sender, EventArgs e)
+        {
+            if (chkTxOnly.Checked)
+            {
+                this.Text  = "ECU Simulator - TX Only Mode";
+                StopCanRxPoolingLoop();
+                _msgProcessor.PrepareTxMessagesForTesting();
+            }
         }
     }
 }

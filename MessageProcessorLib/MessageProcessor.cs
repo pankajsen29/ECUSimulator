@@ -108,5 +108,51 @@ namespace MessageProcessorLib
                 }
             }
         }
+
+        /// <summary>
+        /// Only for testing purposes, prepares the Tx messages from the message configuration file
+        /// </summary>
+        public async void PrepareTxMessagesForTesting()
+        {
+            try
+            {
+                if (_messageConfigRoot == null || _messageConfigRoot.Messages == null || _messageConfigRoot.Messages.Count == 0)
+                {
+                    await LoadMessageConfig(_comManagerObj.MessageConfigFile);
+                }
+
+                if (_messageConfigRoot != null && _messageConfigRoot.Messages != null && _messageConfigRoot.Messages.Count > 0)
+                {
+                    foreach (var message in _messageConfigRoot.Messages)
+                    {
+                        var requestData = Convert.FromHexString(message.Request.RequestHexData.DataString.Replace(" ", "").Replace("0x", ""));
+                        CANTxDataQueue.Enqueue(new CANData
+                        {
+                            Id = uint.Parse(message.Request.Id.Replace("0x", "")),
+                            Payload = message.Request.Payload,
+                            IsCanFdFrame = message.Request.IsCanFdFrame,
+                            Data = requestData,
+                            Length = (uint)requestData.Length
+                        });
+                    }
+                }
+            }
+            catch (ArgumentNullException argNullExp)
+            {
+                LastErrorMessage = $"ArgumentNullException: {argNullExp.Message}";
+            }
+            catch (FormatException formatExp)
+            {
+                LastErrorMessage = $"FormatException: {formatExp.Message}";
+            }
+            catch (OverflowException ofExp)
+            {
+                LastErrorMessage = $"OverflowException: {ofExp.Message}";
+            }
+            catch (Exception exp)
+            {
+                LastErrorMessage = $"Exception: {exp.Message}";
+            }
+        }
     }
 }

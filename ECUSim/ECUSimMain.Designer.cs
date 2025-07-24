@@ -44,6 +44,7 @@ namespace ECUSim
             tabCommunicationSettings = new System.Windows.Forms.TabPage();
             InitCANDriver = new System.Windows.Forms.Button();
             btnStartTransmission = new System.Windows.Forms.Button();
+            chkTxOnly = new System.Windows.Forms.CheckBox();
             StatusInfo.SuspendLayout();
             tlpMasterLayout.SuspendLayout();
             tcMain.SuspendLayout();
@@ -79,6 +80,7 @@ namespace ECUSim
             tlpMasterLayout.Controls.Add(tcMain, 0, 1);
             tlpMasterLayout.Controls.Add(InitCANDriver, 2, 0);
             tlpMasterLayout.Controls.Add(btnStartTransmission, 1, 0);
+            tlpMasterLayout.Controls.Add(chkTxOnly, 0, 0);
             tlpMasterLayout.Dock = System.Windows.Forms.DockStyle.Fill;
             tlpMasterLayout.Location = new System.Drawing.Point(0, 0);
             tlpMasterLayout.Margin = new System.Windows.Forms.Padding(2);
@@ -245,6 +247,19 @@ namespace ECUSim
             btnStartTransmission.UseVisualStyleBackColor = false;
             btnStartTransmission.Click += btnStartTransmission_Click;
             // 
+            // chkTxOnly
+            // 
+            chkTxOnly.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            chkTxOnly.AutoSize = true;
+            chkTxOnly.BackColor = System.Drawing.Color.FromArgb(255, 128, 0);
+            chkTxOnly.Location = new System.Drawing.Point(3, 19);
+            chkTxOnly.Name = "chkTxOnly";
+            chkTxOnly.Size = new System.Drawing.Size(218, 19);
+            chkTxOnly.TabIndex = 3;
+            chkTxOnly.Text = "Switch it to a Test Sender? (TX only?)";
+            chkTxOnly.UseVisualStyleBackColor = false;
+            chkTxOnly.CheckedChanged += chkTxOnly_CheckedChanged;
+            // 
             // ECUSimMain
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -260,6 +275,7 @@ namespace ECUSim
             StatusInfo.ResumeLayout(false);
             StatusInfo.PerformLayout();
             tlpMasterLayout.ResumeLayout(false);
+            tlpMasterLayout.PerformLayout();
             tcMain.ResumeLayout(false);
             tabRequestReplySetup.ResumeLayout(false);
             tabRequestReplySetup.PerformLayout();
@@ -285,6 +301,7 @@ namespace ECUSim
         private System.Windows.Forms.Button btnLoadMsgConfig;
         private System.Windows.Forms.TextBox txtMessageConfigFilePath;
         private System.Windows.Forms.Button btnStartTransmission;
+        private System.Windows.Forms.CheckBox chkTxOnly;
     }
 }
 
