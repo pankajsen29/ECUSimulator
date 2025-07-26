@@ -713,6 +713,7 @@ namespace HardwareDriverLayer.Wrapper
                     Dlc = (byte)xlevent.tagData.can_Msg.dlc,
                     Payload = (byte)xlevent.tagData.can_Msg.dlc,
                     IsRxData = true,
+                    Length = 0,
                     IsCanFdFrame = false                    
                 };
                 if (0 < xlevent.tagData.can_Msg.dlc)
@@ -722,8 +723,8 @@ namespace HardwareDriverLayer.Wrapper
                     {
                         canData.Data[i] = xlevent.tagData.can_Msg.data[i];
                     }
-                }                    
-                canData.Length = (uint)canData.Data.Length;
+                    canData.Length = (uint)canData.Data.Length;
+                }
 
                 // Notify the received CAN data
                 RaiseOnMessageReceived(canData);
@@ -755,6 +756,7 @@ namespace HardwareDriverLayer.Wrapper
                     Channel = receivedRxEvent.channelIndex,
                     Dlc = (byte)receivedRxEvent.tagData.canRxOkMsg.dlc,
                     Payload = VectorUtil.GET_CANFD_PAYLOAD(receivedRxEvent.tagData.canRxOkMsg.dlc),
+                    Length = 0,
                     IsRxData = true,
                     IsCanFdFrame = (receivedRxEvent.tagData.canRxOkMsg.msgFlags != XLDefine.XL_CANFD_RX_MessageFlags.XL_CAN_RXMSG_FLAG_NONE)                  
                 };
@@ -765,8 +767,8 @@ namespace HardwareDriverLayer.Wrapper
                     {
                         canData.Data[i] = receivedRxEvent.tagData.canRxOkMsg.data[i];
                     }
-                }
-                canData.Length = (uint)canData.Data.Length;
+                    canData.Length = (uint)canData.Data.Length;
+                }                
                 // Notify the received CAN data
                 RaiseOnMessageReceived(canData);
             }

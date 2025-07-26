@@ -38,7 +38,7 @@
         <DataGrid Grid.Row="1" 
                 HeadersVisibility="Column" 
                 HorizontalAlignment="Stretch" 
-                ItemsSource="{Binding CANMessageCollection}"                  
+                ItemsSource="{Binding CurrentCANMessageCollection}"                  
                 SelectionUnit="FullRow" 
                 SelectionMode="Extended" 
                 AutoGenerateColumns="False" 

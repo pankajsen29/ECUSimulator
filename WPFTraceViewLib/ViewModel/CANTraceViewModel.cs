@@ -14,10 +14,7 @@ namespace WPFTraceViewLib.ViewModel
 
         public ObservableCollection<CANData> CANMessageCollection { get; set; }
         public ObservableCollection<CANData> CANMessageCollection_Overwrite { get; set; }
-
-        public ConcurrentQueue<CANData> LogCANDataQueue { get; set; }
-
-        public static Dispatcher UiDispatcher { get; private set; }
+        public ObservableCollection<CANData> CurrentCANMessageCollection => IsOverwriteEnabled ? CANMessageCollection_Overwrite : CANMessageCollection;
 
         private bool _isOverwriteEnabled = false;
         public bool IsOverwriteEnabled
@@ -25,8 +22,12 @@ namespace WPFTraceViewLib.ViewModel
             get => _isOverwriteEnabled;
             set
             {
-                _isOverwriteEnabled = value;
-                OnPropertyChanged();
+                if (_isOverwriteEnabled != value)
+                {
+                    _isOverwriteEnabled = value;
+                    OnPropertyChanged(nameof(IsOverwriteEnabled));
+                    OnPropertyChanged(nameof(CurrentCANMessageCollection));
+                }
             }
         }
 
@@ -40,6 +41,9 @@ namespace WPFTraceViewLib.ViewModel
                 OnPropertyChanged();
             }
         }
+        public ConcurrentQueue<CANData> LogCANDataQueue { get; set; }
+
+        public static Dispatcher UiDispatcher { get; private set; }
 
         public ICommand ClearTraceCommand { get; private set; }
 
@@ -67,12 +71,27 @@ namespace WPFTraceViewLib.ViewModel
             UiDispatcher.BeginInvoke(() =>
             {
                 CANMessageCollection.Add(data);
-                CANMessageCollection_Overwrite.Add(data);
+                AddOrUpdate(CANMessageCollection_Overwrite, data, x => x.Id == data.Id);
             });
             if (IsLoggingEnabled)
             {
                 LogCANDataQueue.Enqueue(data);
-            }            
+            }
+        }
+
+        private void AddOrUpdate<T>(ObservableCollection<T> collection, T newItem, Func<T, bool> predicate)
+        {
+            var existingItem = collection.FirstOrDefault(predicate);
+            if (existingItem != null)
+            {
+                // remove and re-add to trigger collection changed
+                int index = collection.IndexOf(existingItem);
+                collection[index] = newItem;
+            }
+            else
+            {
+                collection.Add(newItem);
+            }
         }
 
         private void HandleClearTraceCommand(object? obj)
