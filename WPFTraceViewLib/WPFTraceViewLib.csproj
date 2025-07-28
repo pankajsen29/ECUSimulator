@@ -21,6 +21,7 @@
 	
   <ItemGroup>
     <ProjectReference Include="..\CommonHwLib\CommonHwLib.csproj" />
+    <ProjectReference Include="..\LoggerLib\LoggerLib.csproj" />
     <ProjectReference Include="..\WPFLibBase\WPFLibBase.csproj" />
   </ItemGroup>
 

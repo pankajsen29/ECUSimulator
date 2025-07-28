@@ -2,15 +2,17 @@
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 using System.Windows.Threading;
+using Timer = System.Timers.Timer;
 using CommonHwLib;
 using HwSettingsLib;
 using WPFTraceViewLib.Command;
+using LoggerLib;
 
 namespace WPFTraceViewLib.ViewModel
 {
     internal class CANTraceViewModel : ViewModelBase
     {
-        private static CommunicationManager _comManager;
+        private static CommunicationManager? _comManager;
 
         public ObservableCollection<CANData> CANMessageCollection { get; set; }
         public ObservableCollection<CANData> CANMessageCollection_Overwrite { get; set; }
@@ -39,13 +41,17 @@ namespace WPFTraceViewLib.ViewModel
             {
                 _isLoggingEnabled = value;
                 OnPropertyChanged();
+                EnableLogging();
             }
         }
         public ConcurrentQueue<CANData> LogCANDataQueue { get; set; }
 
-        public static Dispatcher UiDispatcher { get; private set; }
+        public static Dispatcher? UiDispatcher { get; private set; }
 
         public ICommand ClearTraceCommand { get; private set; }
+
+        private Logger? CANLogger = null;
+        private Timer? CANLogTimer = null;
 
         /// <summary>
         /// 
@@ -56,26 +62,33 @@ namespace WPFTraceViewLib.ViewModel
             ClearTraceCommand = new RelayCommand(new Action<object?>(HandleClearTraceCommand));
             CANMessageCollection = new ObservableCollection<CANData>();
             CANMessageCollection_Overwrite = new ObservableCollection<CANData>();
-            LogCANDataQueue = new ConcurrentQueue<CANData>();
+            LogCANDataQueue = new ConcurrentQueue<CANData>();            
         }
 
         public bool OnStart(CommunicationManager comManager)
         {
             _comManager = comManager;
-            _comManager.NotifyTraceView += DisplayInTraceView;
+            if (null != _comManager)
+            {
+                _comManager.NotifyTraceView += DisplayInTraceView;
+                InitCANLogger(comManager.CANLogFile);
+            }
             return true;
-        }
+        }       
 
         private void DisplayInTraceView(CANData data)
         {
-            UiDispatcher.BeginInvoke(() =>
+            if (null != UiDispatcher)
             {
-                CANMessageCollection.Add(data);
-                AddOrUpdate(CANMessageCollection_Overwrite, data, x => x.Id == data.Id);
-            });
-            if (IsLoggingEnabled)
-            {
-                LogCANDataQueue.Enqueue(data);
+                UiDispatcher.BeginInvoke(() =>
+                {
+                    CANMessageCollection.Add(data);
+                    AddOrUpdate(CANMessageCollection_Overwrite, data, x => x.Id == data.Id);
+                });
+                if (IsLoggingEnabled)
+                {
+                    LogCANDataQueue.Enqueue(data);
+                }
             }
         }
 
@@ -99,6 +112,54 @@ namespace WPFTraceViewLib.ViewModel
             //clear the collections
             CANMessageCollection.Clear();
             CANMessageCollection_Overwrite.Clear();
+        }
+
+        private void InitCANLogger(string canlogfile)
+        {
+            CANLogger = new Logger(canlogfile);
+
+            CANLogTimer = new Timer();
+            CANLogTimer.Interval = 1;
+            CANLogTimer.AutoReset = false;
+            CANLogTimer.Elapsed += delegate
+            {
+                try
+                {
+                    CANLogTimerTick();
+                }
+                catch (Exception ex)
+                {
+                }
+                finally
+                {
+                    CANLogTimer.Start();
+                }
+            };
+            CANLogTimer.Enabled = false;
+        }
+
+        private void CANLogTimerTick()
+        {
+            if (IsLoggingEnabled && LogCANDataQueue.Count > 0)
+            {
+                while (LogCANDataQueue.TryDequeue(out CANData? data) && null != data)
+                {
+                    var message = string.Format("{0} {1} {2} {3}", data.Timestamp.PadRight(30, ' '), data.Id.ToString().PadRight(15, ' '), data.Dlc.ToString().PadRight(5, ' '), BitConverter.ToString(data.Data).Replace("-", " "));
+                    CANLogger?.WriteToLog(message, false);
+                }
+            }
+        }
+
+        private void EnableLogging()
+        {
+            if (IsLoggingEnabled)
+            {
+                if (null != CANLogTimer) CANLogTimer.Enabled = true;
+            }
+            else
+            {
+                if (null != CANLogTimer) CANLogTimer.Enabled = false;
+            }
         }
     }
 }

@@ -26,6 +26,8 @@ namespace ECUSim
             InitializeComponent();
             ComManagerObj.CommunicationSettingsFile = StaticKeys.Communication_Settings_File;
             ComManagerObj.MessageConfigFile = StaticKeys.Messages_Config_File;
+            ComManagerObj.GeneralLogFile = StaticKeys.General_Log_File;
+            ComManagerObj.CANLogFile = StaticKeys.CAN_Log_File;
             ComManagerObj.ApplyUpdateOfCommunicationSettings += ApplyUpdatedCommunicationSettings;
 
             _msgConfigManager = new MessageConfigManager();

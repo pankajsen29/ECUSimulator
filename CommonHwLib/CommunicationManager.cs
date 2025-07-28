@@ -15,6 +15,9 @@ namespace CommonHwLib
     {
         public string MessageConfigFile { get; set; } = string.Empty;
         public string CommunicationSettingsFile { get; set; } = string.Empty;
+        public string GeneralLogFile { get; set; } = string.Empty;
+        public string CANLogFile { get; set; } = string.Empty;
+
         public CommunicationSettings ComSettings { get; set; }
 
         private static readonly Lazy<CommunicationManager> _sComManager = new Lazy<CommunicationManager>(() => new CommunicationManager());
