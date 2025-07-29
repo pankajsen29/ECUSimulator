@@ -1,9 +1,9 @@
 ﻿using CommonHwLib;
 using HwSettingsLib;
+using LoggerLib;
 using MessageDesignerLib;
 using MessageProcessorLib;
 using System;
-using System.Diagnostics;
 using System.IO;
 using System.Security.Principal;
 using System.Threading;
@@ -21,6 +21,9 @@ namespace ECUSim
 
         private CancellationTokenSource _ctsCanSending;
         private CancellationTokenSource _ctsCanRxPooling;
+
+        private Logger? LoggerObj = null;
+
         public ECUSimMain()
         {
             InitializeComponent();
@@ -29,6 +32,7 @@ namespace ECUSim
             ComManagerObj.GeneralLogFile = StaticKeys.General_Log_File;
             ComManagerObj.CANLogFile = StaticKeys.CAN_Log_File;
             ComManagerObj.ApplyUpdateOfCommunicationSettings += ApplyUpdatedCommunicationSettings;
+            LoggerObj = new Logger(ComManagerObj.GeneralLogFile);
 
             _msgConfigManager = new MessageConfigManager();
             _msgProcessor = new MessageProcessor(ComManagerObj);
@@ -40,9 +44,10 @@ namespace ECUSim
 
         private void ECUSimMain_Load(object sender, EventArgs e)
         {
+            WriteLog("ECU Simulator - Loading..");
             DisplayUserRights();
             LoadTraceViewTab();
-            LoadRequestResponseTab();
+            Task.Run(async () => await LoadRequestResponseTab());
             ApplyUpdatedCommunicationSettings();
             LoadCommunicationSettingsTab();
         }
@@ -60,27 +65,39 @@ namespace ECUSim
             {
                 UserInfo.Text += @" ADMIN";
             }
-        }
-
-        private void LoadCommunicationSettingsTab()
-        {
-            var communicationSettingsUserControl = new WpfHostUserControl("WPFComSettingsViewLib", ComManagerObj);
-            tcMain.TabPages[2].Controls.Add(communicationSettingsUserControl);
-            communicationSettingsUserControl.Dock = DockStyle.Fill;
+            WriteLog("User: " + UserInfo.Text);
         }
 
         private void LoadTraceViewTab()
         {
+            WriteLog("Loading Trace Tab..");
             var traceViewUserControl = new WpfHostUserControl("WPFTraceViewLib", ComManagerObj);
             tcMain.TabPages[0].Controls.Add(traceViewUserControl);
             traceViewUserControl.Dock = DockStyle.Fill;
         }
 
-        private async void LoadRequestResponseTab()
+        private async Task LoadRequestResponseTab()
         {
+            WriteLog("Loading 'Request/Response Setup' Tab..");
             txtMessage.Text = await _msgConfigManager.LoadMessageDefinition();
             txtMessageConfigFilePath.Text = ComManagerObj.MessageConfigFile;
             await LoadMsgConfig();
+        }
+
+        private void LoadCommunicationSettingsTab()
+        {
+            WriteLog("Loading Communication Settings Tab..");
+            var communicationSettingsUserControl = new WpfHostUserControl("WPFComSettingsViewLib", ComManagerObj);
+            tcMain.TabPages[2].Controls.Add(communicationSettingsUserControl);
+            communicationSettingsUserControl.Dock = DockStyle.Fill;
+        }
+
+        private void WriteLog(string message)
+        {
+            if (null != LoggerObj)
+            {
+                LoggerObj.WriteToLog(message);
+            }
         }
 
         private void ApplyUpdatedCommunicationSettings()
@@ -110,19 +127,23 @@ namespace ECUSim
             //if file exists, deserialize it and load it
             if (File.Exists(ComManagerObj.CommunicationSettingsFile))
             {
+                WriteLog("Loading the settings from: " + ComManagerObj.CommunicationSettingsFile);
                 ComManagerObj.ComSettings.Dispose();
                 ComManagerObj.ComSettings = null;
                 ComManagerObj.ComSettings = (CommunicationSettings)await JsonSerializationHelper.Deserialize<CommunicationSettings>(ComManagerObj.CommunicationSettingsFile);
             }
 
+            WriteLog("Initializing the communication driver!");
             var initCANStatus = ComManagerObj.InitializeCommunicationDriver();
             InitCANDriver.BackColor = initCANStatus ? System.Drawing.Color.LightGreen : System.Drawing.Color.Red;
             if (!initCANStatus)
             {
+                WriteLog($"Error initializing CAN driver: {ComManagerObj.LastErrorMessage}");
                 MessageBox.Show($"Error initializing CAN driver: {ComManagerObj.LastErrorMessage}", "Initialization Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             else if (!string.IsNullOrWhiteSpace(ComManagerObj.LastErrorMessage))
             {
+                WriteLog(ComManagerObj.LastErrorMessage);
                 MessageBox.Show(ComManagerObj.LastErrorMessage, "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
@@ -164,6 +185,7 @@ namespace ECUSim
                 ComManagerObj.MessageConfigFile = messageConfigFilePath;
                 if (File.Exists(messageConfigFilePath))
                 {
+                    WriteLog("Loading messages from: " + messageConfigFilePath);
                     txtMessageConfigFilePath.BackColor = System.Drawing.Color.LightGreen;
                     txtMessagesConfig.Text = await _msgConfigManager.LoadMessageConfig(ComManagerObj.MessageConfigFile);
                 }
@@ -176,6 +198,7 @@ namespace ECUSim
             else
             {
                 txtMessageConfigFilePath.BackColor = System.Drawing.Color.Red;
+                WriteLog(message);
                 MessageBox.Show(message, "Invalid Message Config File Path!, Enter full path of a json to be created/modified.", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
@@ -183,9 +206,11 @@ namespace ECUSim
 
         private async void btnStartTransmission_Click(object sender, EventArgs e)
         {
+            WriteLog("Starting the transmission...");
             var isMsgConfigLoaded = await _msgProcessor.LoadMessageConfig(ComManagerObj.MessageConfigFile);
             if (isMsgConfigLoaded)
             {
+                WriteLog("Reloaded messages from: " + ComManagerObj.MessageConfigFile);
                 _msgProcessor.CANTxDataQueue.Clear();
                 if (btnStartTransmission.Text.ToUpper().Equals("START"))
                 {
@@ -209,6 +234,7 @@ namespace ECUSim
             }
             else
             {
+                WriteLog("Error loading message configuration file: " + _msgProcessor.LastErrorMessage);
                 MessageBox.Show("Error loading message configuration file: " + _msgProcessor.LastErrorMessage, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -218,6 +244,7 @@ namespace ECUSim
         /// </summary>
         public void StartCanSendingLoop()
         {
+            WriteLog("Starting CAN sending..");
             _ctsCanSending = new CancellationTokenSource();
 
             Task.Run(() =>
@@ -274,6 +301,7 @@ namespace ECUSim
         /// </summary>
         public void StartCanRxPoolingLoop()
         {
+            WriteLog("Starting CAN Rx pooling..");
             _ctsCanRxPooling = new CancellationTokenSource();
 
             Task.Run(() =>
@@ -327,6 +355,7 @@ namespace ECUSim
         /// </summary>
         public void StopCanRxPoolingLoop()
         {
+            WriteLog("Stopping CAN Rx pooling..");
             _ctsCanRxPooling?.Cancel();
         }
 
@@ -338,6 +367,7 @@ namespace ECUSim
         /// </summary>
         public void StopCanSendingLoop()
         {
+            WriteLog("Stopping CAN sending..");
             _ctsCanSending?.Cancel();
         }
 

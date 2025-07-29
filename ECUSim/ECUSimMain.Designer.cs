@@ -182,12 +182,12 @@ namespace ECUSim
             // btnAddMessage
             // 
             btnAddMessage.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
-            btnAddMessage.Location = new System.Drawing.Point(328, 2);
+            btnAddMessage.Location = new System.Drawing.Point(319, 2);
             btnAddMessage.Margin = new System.Windows.Forms.Padding(2);
             btnAddMessage.Name = "btnAddMessage";
-            btnAddMessage.Size = new System.Drawing.Size(176, 30);
+            btnAddMessage.Size = new System.Drawing.Size(185, 30);
             btnAddMessage.TabIndex = 2;
-            btnAddMessage.Text = "Add the below message >>";
+            btnAddMessage.Text = "Add the below message to >>";
             btnAddMessage.UseVisualStyleBackColor = true;
             btnAddMessage.Click += btnAddMessage_Click;
             // 

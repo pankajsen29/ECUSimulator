@@ -1,4 +1,5 @@
 ﻿using Serilog;
+using Serilog.Events;
 using System;
 
 namespace LoggerLib
@@ -6,15 +7,14 @@ namespace LoggerLib
     /// <summary>
     /// https://github.com/serilog/serilog/blob/dev/LICENSE
     /// https://github.com/serilog/serilog-sinks-file/blob/dev/LICENSE
-    /// https://github.com/serilog/serilog-settings-appsettings/blob/dev/LICENSE
     /// </summary>
     public class Logger : IDisposable
     {
-        private LoggerConfiguration _loggerConfig;
+        private ILogger _loggerObj;
 
-        public Logger(string logfile)
+        public Logger(string logFilePath)
         {
-            ConfigureLogger(logfile);
+            _loggerObj = GetLogger(logFilePath);
         }
 
         ~Logger()
@@ -22,23 +22,17 @@ namespace LoggerLib
             Dispose(false);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        private void ConfigureLogger(string logfile)
+        public ILogger GetLogger(string logFilePath)
         {
-            _loggerConfig = new LoggerConfiguration();            
-
-            if (!String.IsNullOrWhiteSpace(logfile))
-            {
-                _loggerConfig.WriteTo.File(logfile,
-                    rollOnFileSizeLimit: true,
-                    fileSizeLimitBytes: 10000000,
-                    retainedFileCountLimit: 10,
-                    outputTemplate: "[{Level:u3}] {Message:lj}{NewLine}{Exception}");
-                Log.Logger = _loggerConfig.CreateLogger();
-            }
+            return new LoggerConfiguration()
+                    .MinimumLevel.Is(LogEventLevel.Information)
+                    .WriteTo.File(
+                        path: logFilePath,
+                        outputTemplate: "[{Level:u3}] {Message:lj}{NewLine}{Exception}",
+                        fileSizeLimitBytes: 10000000,
+                        rollOnFileSizeLimit: true,
+                        retainedFileCountLimit: 10)
+                    .CreateLogger();
         }
 
         public void WriteToLog(string message, bool addtimestamp = true)
@@ -47,7 +41,7 @@ namespace LoggerLib
             {
                 message = $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff}] {message}";
             }
-            Log.Information(message);
+            _loggerObj.Information(message);
         }
 
         public void Dispose()
@@ -63,7 +57,7 @@ namespace LoggerLib
 
             if (disposing)
             {
-                Log.CloseAndFlush();
+                (_loggerObj as Logger)?.Dispose();
             }
             m_isDisposed = true;
         }

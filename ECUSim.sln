@@ -29,6 +29,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WPFComSettingsViewLib", "WP
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MessageProcessorLib", "MessageProcessorLib\MessageProcessorLib.csproj", "{59322186-CD64-49CA-AB5E-DD730A7676E0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoggerLib", "LoggerLib\LoggerLib.csproj", "{ECA5968A-51B4-4B9E-B04B-44803CF86C50}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -87,6 +89,10 @@ Global
 		{59322186-CD64-49CA-AB5E-DD730A7676E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{59322186-CD64-49CA-AB5E-DD730A7676E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{59322186-CD64-49CA-AB5E-DD730A7676E0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ECA5968A-51B4-4B9E-B04B-44803CF86C50}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ECA5968A-51B4-4B9E-B04B-44803CF86C50}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ECA5968A-51B4-4B9E-B04B-44803CF86C50}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ECA5968A-51B4-4B9E-B04B-44803CF86C50}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
