@@ -157,35 +157,71 @@ using System.Windows.Forms.Integration; // For ElementHost
 
 **<ins>Functailities:<ins>**
  - todo: sequence diagram to be included
-
-**<ins>Test Setup:<ins>**
- - screenshot for communication setup: hardware setup for Vector Virtual CAN Driver
- - screenshot for messages (request-response) setup: CAN messages
    
-**<ins>Testing and demo:<ins>**
- - todo: add screenshot of the test steps
- - todo: add screenshot of the trace window showing CAN messages
+**<ins>UI Screenshots:<ins>**
 
   **"Request/Response Setup" tab:**
-  <img width="1143" height="635" alt="request-response setup tab" src="https://github.com/user-attachments/assets/d3419b4d-c012-451c-98ef-54bfe27b0c1a" />
+  <img width="1126" height="686" alt="request-response setup tab" src="https://github.com/user-attachments/assets/2efefc38-fe46-4769-9e48-31d9bb589f28" />
 
   
   **"Communication Setup" tab:**
   
   CAN Initialization of Vector Virtual CAN Interface:
-  ![CAN_init](https://github.com/user-attachments/assets/8fe2d7d3-399f-43d4-8590-a9ad79b14449)
+  <img width="1297" height="625" alt="CAN_init" src="https://github.com/user-attachments/assets/5f1588cd-b574-49ce-8f89-1ef99419f997" />
+
 
   CANFD Initialization of Vector Virtual CAN Interface:
-  ![CANFD_init](https://github.com/user-attachments/assets/d5e613e9-4eed-429f-b316-f9ef0a4f001d)
+  <img width="1306" height="625" alt="CANFD_init" src="https://github.com/user-attachments/assets/9e2e7e44-3fee-4ec3-a780-c053b0f75c67" />
+
 
   **"Trace" tab:**
-  
- 
+  <img width="1141" height="635" alt="2025-07-29_13h05_47" src="https://github.com/user-attachments/assets/8f936a50-dc3a-4c41-be93-5934cf4ffc31" />
+
+
+**<ins>Test Setup:<ins>**
+ - Step 1: hardware setup for Vector Virtual CAN Driver (define the parameters as seen in the 'Communication Setup' screenshot above)
+ - Step 2: Message setup (define the messages as seen in the 'Request/Response Setup' screenshot above)
+ - Step 3: Run ECU Simulator (INSTANCE 1)
+ - Step 4: Run another instance of ECU Simulator (INSTANCE 2)
+   
+**<ins>Testing and demo screens:<ins>**
+ - Step 1: Follow steps as described in Test Setup, ensure "INIT/RE-INIT CAN" is green indicating the communication is set up for both the instances.
+ - Step 2: In "INSTANCE 1" of the ECU Simulator, start the Transmission by clicking on "START" and stay in the Trace tab.
+ - Step 3: Enable logging by clicking on "Logging" checkbox in the Trace tab.
+ - Step 4: (OPTIONAL) choose Overwrite if only the unique and latest messages are to be seen on the trace.
+
+   at this point:
+   <img width="1330" height="610" alt="test_1" src="https://github.com/user-attachments/assets/1ea9e2c0-3dc3-4805-970e-05b9f1326b06" />
+
+   
+ - Step 5: Now in "INSTANCE 2" of the ECU Simulator, start the Transmission by clicking on "START" and stay in the Trace tab.
+
+   at this point:
+   <img width="1342" height="601" alt="test_2" src="https://github.com/user-attachments/assets/1865a97c-3a69-4926-98cc-baba0baac13a" />
+
+   
+ - Step 6: And then in this "INSTANCE 2", enable the Test Mode by enabling the checkbox at the top: "Switch it to a Test Sender? (TX only?)"
+ - Notice: all CAN Tx messages configured in messagesConfig.json are sent on the CAN BUS.
+
+   at this point:
+   <img width="1323" height="633" alt="test_3" src="https://github.com/user-attachments/assets/9e8341fb-d897-4a40-9799-0c68deed3bb2" />
+
+   
+ - Also notice: in the Trace tab of "INSTANCE 1, "these Tx and the corresponding responses (i.e., the Rx) from the messagesConfig.json are seen too.
+
+   at this point:
+   <img width="1318" height="630" alt="test_4" src="https://github.com/user-attachments/assets/82117b41-ef85-4f49-bf9c-7d0cf304739e" />
+
+   
+ - with this a test cycle is complete.
+ - Note: configure more messages to test.
+
+   
 **<ins>Limitation:<ins>**
  - (Temporary) the hardware communication code supports only Vector interfaces at the moment, hence can't be used with any other hardware interfaces (e.g., PEAK, DCI, ETAS etc.). But have plan to support in case the planned primary purpose of this tool is observed. Design is done considering this point.
  
 **<ins>Logging:<ins>**
- - Log4net (to be included)
+ - logging is implemented using serilog.
 
 **<ins>CMD-line execution:<ins>**
  - todo: for the purpose of automation
