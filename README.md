@@ -205,7 +205,6 @@ using System.Windows.Forms.Integration; // For ElementHost
    at this point:
    <img width="1342" height="601" alt="test_2" src="https://github.com/user-attachments/assets/60b40a45-2548-46d5-aa16-cd0ce7b9ec75" />
 
-
    
  - Step 6: And then in this "INSTANCE 2", enable the Test Mode by enabling the checkbox at the top: "Switch it to a Test Sender? (TX only?)"
    (hint: required ONLY for testing the ECU Simulator - which is actually the INSTANCE 1)
@@ -214,13 +213,11 @@ using System.Windows.Forms.Integration; // For ElementHost
    at this point:
    <img width="1323" height="633" alt="test_3" src="https://github.com/user-attachments/assets/2a31e8c6-984f-427b-9cb2-52b57099b9fd" />
 
-
    
  - Also notice: in the Trace tab of "INSTANCE 1, "these Tx and the corresponding responses (i.e., the Rx) from the messagesConfig.json are seen too.
 
    at this point:
    <img width="1318" height="630" alt="test_4" src="https://github.com/user-attachments/assets/f90387e7-47cf-4aaa-a59f-55eaca5722fb" />
-
 
    
  - with this a test cycle is complete.
@@ -229,12 +226,17 @@ using System.Windows.Forms.Integration; // For ElementHost
    
 **<ins>Limitation:<ins>**
  - (Temporary) the hardware communication code supports only Vector interfaces at the moment, hence can't be used with any other hardware interfaces (e.g., PEAK, DCI, ETAS etc.). But have plan to support in case the planned primary purpose of this tool is observed. Design is done considering this point.
+ - sending of longer CAN data is possible, i.e., in terms of multiple CAN/CANFD frames.
+ - but, currently receiving is supported for only single CAN/CANFD frame
  
 **<ins>Logging:<ins>**
  - logging is implemented using serilog.
+   
+ - Serilog license: https://github.com/serilog/serilog/blob/dev/LICENSE
+ - Serilog.Sinks.File license: https://github.com/serilog/serilog-sinks-file/blob/dev/LICENSE
 
 **<ins>CMD-line execution:<ins>**
  - todo: for the purpose of automation
 
 **<ins>Installer:<ins>**
- - installer msi project to be created
+ - todo: installer msi project to be created
