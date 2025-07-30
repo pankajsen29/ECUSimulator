@@ -88,20 +88,20 @@ Factsheet:
 - ECUSim: The is the main GUI host application. It is a Winform application which also supports addition of WPF projects (notice "<UseWPF>True</UseWPF>" in ECUSim.csproj file).
 	- winforms: used for faster development.
 	- wpf: is used for rich GUI (MVVM pattern is followed)
-
-- UtilityLib: includes utility methods, e.g., json serialization/deserialization methods.
   
 - CommonHwLib: This is the main layer for hardware communication. It includes the wrapper classes for hardware drivers. handles the driver initialization and communication (sending/receiving of CAN messages)
   
-- HwSettingsLib: includes definitions of types used for hardware communication.
-  
-- HwWrapperInterface: interface for Hardware wrapper library.
-  
-- VectorXLWrapper: vector hardware wrapper/driver library which implements the methods for vector driver initialization, transmitting/receiving messages etc.
+- HwSettingsLib: includes definitions of common types used for hardware communication. Also includes the definition of CAN data used for wrapping Tx/Rx CAN message details.
 
 - HwWrapperFactory: includes the factory classes for returning the concrete object of the hardware wrapper/driver library.
+  
+- HwWrapperInterface: interface for Hardware wrapper library.
 
-- MessageDesignerLib: includes the types used for defining a message to be transmitted.
+- VectorXLWrapper: vector hardware wrapper/driver library which implements the methods for vector driver initialization, transmitting/receiving messages etc.
+  
+- MessageDesignerLib: includes the types used for defining a message to be transmitted. Also includes the functionalities for configuring messages.
+  
+- MessageProcessorLib: includes the functionalities to process a request message and prepare a response message.
 
 - WPFHostLib (Windows Forms Class Library): contains an ElementHost control to load a WPF view in winform application. This one library is used for loading all the WPF views created in this whole application. With this approach including multiple ElementHost controls is avoided in the application.
 
@@ -147,10 +147,14 @@ using System.Windows.Forms.Integration; // For ElementHost
 
 - WPFLibBase (WPF Class Library): Library containing the interface usercontrol for all the wpf view to implement, which will be used by WPFHostLib to initialize and load the view.
 
-- WPFTraceViewLib (WPF Class Library): it includes the view for showing the CAN trace of the communication.
+- WPFComSettingsViewLib (WPF Class Library): this is the WPF UI implementation of the "Communication Setup" tab. It includes the view for modifying the communication settings and initialization of the CAN communication.
 
-- WPFComSetupViewLib (WPF Class Library): it includes the view for modifying the communication settings and initialization of the CAN communication.
+- WPFTraceViewLib (WPF Class Library): this is the WPF UI implementation of the "Trace" tab. It includes the view for showing the CAN trace of the communication.
 
+- UtilityLib: includes utility methods, e.g., json serialization/deserialization methods, HighPrecisionTimer defintion etc.
+ 
+- LoggerLib: Logger library which provides logging functionality to the application using Serilog.
+  
 
 **<ins>Overall Project structure:<ins>**
  - todo: component diagram to be included
@@ -183,6 +187,7 @@ using System.Windows.Forms.Integration; // For ElementHost
  - Step 2: Message setup (define the messages as seen in the 'Request/Response Setup' screenshot above)
  - Step 3: Run ECU Simulator (INSTANCE 1)
  - Step 4: Run another instance of ECU Simulator (INSTANCE 2)
+   (this is required only for testing purpose, not required when there is an actual test client which can send Tx CAN messages on the BUS. INSTANCE 1 can then simulate the responses corresponding to the Tx messages received from the BUS)
    
 **<ins>Testing and demo screens:<ins>**
  - Step 1: Follow steps as described in Test Setup, ensure "INIT/RE-INIT CAN" is green indicating the communication is set up for both the instances.
@@ -195,22 +200,27 @@ using System.Windows.Forms.Integration; // For ElementHost
 
    
  - Step 5: Now in "INSTANCE 2" of the ECU Simulator, start the Transmission by clicking on "START" and stay in the Trace tab.
+   (hint: required ONLY for testing the ECU Simulator - which is actually the INSTANCE 1)
 
    at this point:
-   <img width="1342" height="601" alt="test_2" src="https://github.com/user-attachments/assets/1865a97c-3a69-4926-98cc-baba0baac13a" />
+   <img width="1342" height="601" alt="test_2" src="https://github.com/user-attachments/assets/60b40a45-2548-46d5-aa16-cd0ce7b9ec75" />
+
 
    
  - Step 6: And then in this "INSTANCE 2", enable the Test Mode by enabling the checkbox at the top: "Switch it to a Test Sender? (TX only?)"
+   (hint: required ONLY for testing the ECU Simulator - which is actually the INSTANCE 1)
  - Notice: all CAN Tx messages configured in messagesConfig.json are sent on the CAN BUS.
 
    at this point:
-   <img width="1323" height="633" alt="test_3" src="https://github.com/user-attachments/assets/9e8341fb-d897-4a40-9799-0c68deed3bb2" />
+   <img width="1323" height="633" alt="test_3" src="https://github.com/user-attachments/assets/2a31e8c6-984f-427b-9cb2-52b57099b9fd" />
+
 
    
  - Also notice: in the Trace tab of "INSTANCE 1, "these Tx and the corresponding responses (i.e., the Rx) from the messagesConfig.json are seen too.
 
    at this point:
-   <img width="1318" height="630" alt="test_4" src="https://github.com/user-attachments/assets/82117b41-ef85-4f49-bf9c-7d0cf304739e" />
+   <img width="1318" height="630" alt="test_4" src="https://github.com/user-attachments/assets/f90387e7-47cf-4aaa-a59f-55eaca5722fb" />
+
 
    
  - with this a test cycle is complete.
