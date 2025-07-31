@@ -156,8 +156,10 @@ using System.Windows.Forms.Integration; // For ElementHost
 - LoggerLib: Logger library which provides logging functionality to the application using Serilog.
   
 
-**<ins>Overall Project structure:<ins>**
- - todo: component diagram to be included
+**<ins>Overall Projects layout:<ins>**
+
+ <img width="1127" height="575" alt="projects_layout" src="https://github.com/user-attachments/assets/7544ebf0-9004-40b5-98af-c46cbb0026db" />
+
 
 **<ins>Functailities:<ins>**
  - todo: sequence diagram to be included
@@ -225,9 +227,10 @@ using System.Windows.Forms.Integration; // For ElementHost
 
    
 **<ins>Limitation:<ins>**
- - (Temporary) the hardware communication code supports only Vector interfaces at the moment, hence can't be used with any other hardware interfaces (e.g., PEAK, DCI, ETAS etc.). But have plan to support in case the planned primary purpose of this tool is observed. Design is done considering this point.
- - sending of longer CAN data is possible, i.e., in terms of multiple CAN/CANFD frames.
- - but, currently receiving is supported for only single CAN/CANFD frame
+ - the hardware communication code supports only Vector interfaces at the moment, hence can't be used with any other hardware interfaces (e.g., PEAK, DCI, ETAS etc.). But have plan to support in case the planned primary purpose of this tool is observed. Design is done considering this point.
+ - sending of longer CAN data is possible, i.e., in terms of multiple CAN/CANFD frames using the payload parameter for the length of each frame.
+ - but, currently receiving is supported for only single CAN/CANFD frame.
+ - Currently each request-response pair is to be configured, responses based on a certian pattern of the request is planned to be implemented in future.
  
 **<ins>Logging:<ins>**
  - logging is implemented using serilog.
