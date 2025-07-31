@@ -41,7 +41,8 @@
         "dependencies": {
           "HwSettingsLib": "1.0.0",
           "HwWrapperFactory": "1.0.0",
-          "HwWrapperInterface": "1.0.0"
+          "HwWrapperInterface": "1.0.0",
+          "UtilityLib": "1.0.0"
         },
         "runtime": {
           "CommonHwLib.dll": {

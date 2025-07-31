@@ -10,7 +10,9 @@
         "dependencies": {
           "CommonHwLib": "1.0.0",
           "HwSettingsLib": "1.0.0",
+          "LoggerLib": "1.0.0",
           "MessageDesignerLib": "1.0.0",
+          "MessageProcessorLib": "1.0.0",
           "UtilityLib": "1.0.0",
           "WPFHostLib": "1.0.0",
           "runtimepack.Microsoft.Windows.SDK.NET.Ref": "10.0.19041.57"
@@ -39,11 +41,31 @@
           }
         }
       },
+      "Serilog/4.3.0": {
+        "runtime": {
+          "lib/net8.0/Serilog.dll": {
+            "assemblyVersion": "4.3.0.0",
+            "fileVersion": "4.3.0.0"
+          }
+        }
+      },
+      "Serilog.Sinks.File/7.0.0": {
+        "dependencies": {
+          "Serilog": "4.3.0"
+        },
+        "runtime": {
+          "lib/net8.0/Serilog.Sinks.File.dll": {
+            "assemblyVersion": "7.0.0.0",
+            "fileVersion": "7.0.0.0"
+          }
+        }
+      },
       "CommonHwLib/1.0.0": {
         "dependencies": {
           "HwSettingsLib": "1.0.0",
           "HwWrapperFactory": "1.0.0",
-          "HwWrapperInterface": "1.0.0"
+          "HwWrapperInterface": "1.0.0",
+          "UtilityLib": "1.0.0"
         },
         "runtime": {
           "CommonHwLib.dll": {
@@ -83,9 +105,37 @@
           }
         }
       },
+      "LoggerLib/1.0.0": {
+        "dependencies": {
+          "Serilog": "4.3.0",
+          "Serilog.Sinks.File": "7.0.0"
+        },
+        "runtime": {
+          "LoggerLib.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
       "MessageDesignerLib/1.0.0": {
+        "dependencies": {
+          "UtilityLib": "1.0.0"
+        },
         "runtime": {
           "MessageDesignerLib.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "MessageProcessorLib/1.0.0": {
+        "dependencies": {
+          "CommonHwLib": "1.0.0",
+          "MessageDesignerLib": "1.0.0",
+          "UtilityLib": "1.0.0"
+        },
+        "runtime": {
+          "MessageProcessorLib.dll": {
             "assemblyVersion": "1.0.0.0",
             "fileVersion": "1.0.0.0"
           }
@@ -165,6 +215,20 @@
       "path": "newtonsoft.json/13.0.3",
       "hashPath": "newtonsoft.json.13.0.3.nupkg.sha512"
     },
+    "Serilog/4.3.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-+cDryFR0GRhsGOnZSKwaDzRRl4MupvJ42FhCE4zhQRVanX0Jpg6WuCBk59OVhVDPmab1bB+nRykAnykYELA9qQ==",
+      "path": "serilog/4.3.0",
+      "hashPath": "serilog.4.3.0.nupkg.sha512"
+    },
+    "Serilog.Sinks.File/7.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-fKL7mXv7qaiNBUC71ssvn/dU0k9t0o45+qm2XgKAlSt19xF+ijjxyA3R6HmCgfKEKwfcfkwWjayuQtRueZFkYw==",
+      "path": "serilog.sinks.file/7.0.0",
+      "hashPath": "serilog.sinks.file.7.0.0.nupkg.sha512"
+    },
     "CommonHwLib/1.0.0": {
       "type": "project",
       "serviceable": false,
@@ -185,7 +249,17 @@
       "serviceable": false,
       "sha512": ""
     },
+    "LoggerLib/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
     "MessageDesignerLib/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "MessageProcessorLib/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""
